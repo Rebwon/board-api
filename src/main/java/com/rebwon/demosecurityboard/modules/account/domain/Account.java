@@ -1,0 +1,47 @@
+package com.rebwon.demosecurityboard.modules.account.domain;
+
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class Account extends BaseEntity {
+	@Id @GeneratedValue
+	private Long id;
+	@Column(unique = true, nullable = false)
+	private String email;
+	@Column(nullable = false)
+	private String password;
+	@Column(nullable = false)
+	private String nickname;
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Enumerated(EnumType.STRING)
+	private Set<AccountRole> roles;
+
+	public static Account of(String email, String password, String nickname) {
+		Account account = new Account();
+		account.email = email;
+		account.password = password;
+		account.nickname = nickname;
+		account.roles = Set.of(AccountRole.USER);
+		return account;
+	}
+}
