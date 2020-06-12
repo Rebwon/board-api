@@ -18,7 +18,7 @@ import com.rebwon.demosecurityboard.modules.account.web.validator.SignUpPayloadV
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 	private final AccountService accountService;
@@ -29,7 +29,7 @@ public class AccountController {
 		webDataBinder.addValidators(signUpPayloadValidator);
 	}
 
-	@PostMapping("/signup")
+	@PostMapping
 	private ResponseEntity register(@RequestBody @Valid SignUpPayload payload, Errors errors) {
 		if(errors.hasErrors()) {
 			return ResponseEntity.badRequest().body(errors);

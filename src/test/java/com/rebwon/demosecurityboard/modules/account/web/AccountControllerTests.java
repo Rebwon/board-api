@@ -52,7 +52,7 @@ public class AccountControllerTests {
 			.nickname("Rebwon")
 			.build();
 
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/api/accounts")
 				.content(objectMapper.writeValueAsString(payload))
 				.contentType(MediaType.APPLICATION_JSON)
 			)
@@ -69,7 +69,7 @@ public class AccountControllerTests {
 			.nickname("test")
 			.build();
 
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/api/accounts")
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
 		)
@@ -86,7 +86,7 @@ public class AccountControllerTests {
 			.nickname("test1")
 			.build();
 
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/api/accounts")
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
 		)
@@ -99,7 +99,7 @@ public class AccountControllerTests {
 	void given_EmptyPayload_When_signUpProcess_Then_Failed_HTTP_CODE_400() throws Exception {
 		SignUpPayload payload = new SignUpPayload();
 
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/api/accounts")
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
 		)
@@ -115,7 +115,7 @@ public class AccountControllerTests {
 			.email(email)
 			.build();
 
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/api/accounts")
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
 		)
@@ -131,7 +131,7 @@ public class AccountControllerTests {
 			.password(password)
 			.build();
 
-		mockMvc.perform(post("/api/signup")
+		mockMvc.perform(post("/api/accounts")
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
 		)

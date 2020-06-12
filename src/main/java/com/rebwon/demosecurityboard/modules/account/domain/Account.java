@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Getter @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Account extends BaseEntity {
 	@Id @GeneratedValue
 	private Long id;
