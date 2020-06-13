@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
+import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
 
 @SpringBootTest
@@ -41,6 +42,24 @@ public class AccountControllerTests {
 	@AfterEach
 	void tearDown() {
 		accountRepository.deleteAll();
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("인증된 사용자가 자신의 정보를 조회")
+	void given_WithAuthMockUser_When_getAccount_Then_return_Account_HTTP_CODE_200() throws Exception {
+		mockMvc.perform(get("/api/accounts/1"))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("인증된 사용자가 자신의 리소스가 아닌 리소스를 접근할 경우 404 에러")
+	void given_WithAuthMockUser_When_getAccount_Not_Mine_Then_HTTP_CODE_404() throws Exception {
+		mockMvc.perform(get("/api/accounts/123"))
+			.andDo(print())
+			.andExpect(status().isNotFound());
 	}
 
 	@Test
