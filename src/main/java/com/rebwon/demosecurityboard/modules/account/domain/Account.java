@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter @Builder
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -43,5 +46,10 @@ public class Account extends BaseEntity {
 		account.nickname = nickname;
 		account.roles = Set.of(AccountRole.USER);
 		return account;
+	}
+
+	public void update(String nickname, String password) {
+		this.nickname = nickname;
+		this.password = password;
 	}
 }

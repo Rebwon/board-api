@@ -14,12 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
+import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
+import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePayload;
 import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
 
 @SpringBootTest
@@ -46,25 +51,51 @@ public class AccountControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
+	@DisplayName("인증된 사용자가 자신의 정보를 수정")
+	void given_UpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_204() throws Exception {
+		AccountUpdatePayload payload = AccountUpdatePayload.builder()
+			.nickname("rebon")
+			.password("123456789")
+			.build();
+		UserAccount userAccount = getUserAccount();
+
+		mockMvc.perform(put("/api/accounts/" + userAccount.getAccount().getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(payload))
+		)
+			.andDo(print())
+			.andExpect(status().isNoContent());
+	}
+
+	@Test
+	@WithAccount("rewon")
 	@DisplayName("인증된 사용자가 자신의 정보를 조회")
 	void given_WithAuthMockUser_When_getAccount_Then_return_Account_HTTP_CODE_200() throws Exception {
-		mockMvc.perform(get("/api/accounts/1"))
+		UserAccount account = getUserAccount();
+		mockMvc.perform(get("/api/accounts/"+ account.getAccount().getId()))
 			.andDo(print())
 			.andExpect(status().isOk());
 	}
 
+	private UserAccount getUserAccount() {
+		SecurityContext context = SecurityContextHolder.getContext();
+		Authentication authentication = context.getAuthentication();
+		return (UserAccount) authentication.getPrincipal();
+	}
+
 	@Test
 	@WithAccount("rebwon")
-	@DisplayName("인증된 사용자가 자신의 리소스가 아닌 리소스를 접근할 경우 404 에러")
-	void given_WithAuthMockUser_When_getAccount_Not_Mine_Then_HTTP_CODE_404() throws Exception {
+	@DisplayName("인증된 사용자가 자신의 리소스가 아닌 리소스를 접근할 경우 403 에러")
+	void given_WithAuthMockUser_When_getAccount_Is_Not_Mine_Resource_Then_HTTP_CODE_403() throws Exception {
 		mockMvc.perform(get("/api/accounts/123"))
 			.andDo(print())
-			.andExpect(status().isNotFound());
+			.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	@DisplayName("사용자가 입력한 값을 검증하고 회원가입 처리")
 	void given_Payload_When_signUpProcess_Then_Success_HTTP_CODE_200() throws Exception {
+		// TODO Refactor HTTP STATUS CODE 200 -> 201
 		SignUpPayload payload = SignUpPayload.builder()
 			.email("rebwon@gmail.com")
 			.password("password!")

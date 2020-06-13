@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
+import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePayload;
 import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
 import lombok.RequiredArgsConstructor;
 
@@ -40,5 +41,10 @@ public class AccountServiceImpl implements AccountService {
 		Account account = Account.of(payload.getEmail(),
 			this.passwordEncoder.encode(payload.getPassword()), payload.getNickname());
 		return this.accountRepository.save(account);
+	}
+
+	@Override
+	public void update(Account account, AccountUpdatePayload payload) {
+		account.update(payload.getNickname(), this.passwordEncoder.encode(payload.getPassword()));
 	}
 }
