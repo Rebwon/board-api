@@ -10,11 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @Builder
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountUpdatePayload {
 	@NotBlank
 	private String nickname;
-	@NotBlank
 	@Length(min = 8, max = 50)
-	private String password;
+	@NotBlank
+	private String newPassword;
+	@Length(min = 8, max = 50)
+	@NotBlank
+	private String newPasswordConfirm;
 }

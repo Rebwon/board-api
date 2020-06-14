@@ -51,11 +51,12 @@ public class AccountControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
-	@DisplayName("인증된 사용자가 자신의 정보를 수정")
+	@DisplayName("정보수정 - 성공")
 	void given_UpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_204() throws Exception {
 		AccountUpdatePayload payload = AccountUpdatePayload.builder()
 			.nickname("rebon")
-			.password("123456789")
+			.newPassword("123456789")
+			.newPasswordConfirm("123456789")
 			.build();
 		UserAccount userAccount = getUserAccount();
 
@@ -68,8 +69,62 @@ public class AccountControllerTests {
 	}
 
 	@Test
-	@WithAccount("rewon")
-	@DisplayName("인증된 사용자가 자신의 정보를 조회")
+	@WithAccount("rebwon")
+	@DisplayName("정보수정 - 입력 형식에 맞지 않음 - 실패")
+	void given_ValidUpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
+		AccountUpdatePayload payload = AccountUpdatePayload.builder()
+			.nickname("rebon")
+			.newPassword("123")
+			.newPasswordConfirm("123")
+			.build();
+
+		mockMvc.perform(put("/api/accounts/123")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(payload))
+		)
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("정보수정 - 이미 존재하는 닉네임과 일치하지 않는 비밀번호 입력 - 실패")
+	void given_ValidateUpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
+		AccountUpdatePayload payload = AccountUpdatePayload.builder()
+			.nickname("rebwon")
+			.newPassword("123456789!")
+			.newPasswordConfirm("1234567890!")
+			.build();
+
+		mockMvc.perform(put("/api/accounts/123")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(payload))
+		)
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("정보수정 - 자신의 정보가 아닌 정보를 수정 - 실패")
+	void given_UpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
+		AccountUpdatePayload payload = AccountUpdatePayload.builder()
+			.nickname("rebon")
+			.newPassword("123456789")
+			.newPasswordConfirm("123456789")
+			.build();
+
+		mockMvc.perform(put("/api/accounts/123")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(payload))
+		)
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("계정조회 - 성공")
 	void given_WithAuthMockUser_When_getAccount_Then_return_Account_HTTP_CODE_200() throws Exception {
 		UserAccount account = getUserAccount();
 		mockMvc.perform(get("/api/accounts/"+ account.getAccount().getId()))
@@ -85,15 +140,15 @@ public class AccountControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
-	@DisplayName("인증된 사용자가 자신의 리소스가 아닌 리소스를 접근할 경우 403 에러")
-	void given_WithAuthMockUser_When_getAccount_Is_Not_Mine_Resource_Then_HTTP_CODE_403() throws Exception {
+	@DisplayName("계정조회 - 자신의 정보가 아닌 정보 조회 - 실패")
+	void given_WithAuthMockUser_When_getAccount_Is_Not_Mine_Resource_Then_HTTP_CODE_400() throws Exception {
 		mockMvc.perform(get("/api/accounts/123"))
 			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
 
 	@Test
-	@DisplayName("사용자가 입력한 값을 검증하고 회원가입 처리")
+	@DisplayName("회원가입 - 성공")
 	void given_Payload_When_signUpProcess_Then_Success_HTTP_CODE_200() throws Exception {
 		// TODO Refactor HTTP STATUS CODE 200 -> 201
 		SignUpPayload payload = SignUpPayload.builder()
@@ -111,7 +166,7 @@ public class AccountControllerTests {
 	}
 
 	@Test
-	@DisplayName("이미 사용 중인 닉네임으로 회원가입할 경우 실패")
+	@DisplayName("회원가입 - 이미 사용중인 닉네임 입력 - 실패")
 	void signUpProcess_When_DuplicateNickname_Then_Failed_HTTP_CODE_400() throws Exception {
 		SignUpPayload payload = SignUpPayload.builder()
 			.email("rebwon@gmail.com")
@@ -128,7 +183,7 @@ public class AccountControllerTests {
 	}
 
 	@Test
-	@DisplayName("이미 사용 중인 이메일로 회원가입할 경우 실패")
+	@DisplayName("회원가입 - 이미 사용중인 이메일 입력 - 실패")
 	void signUpProcess_When_DuplicateEmail_Then_Failed_HTTP_CODE_400() throws Exception {
 		SignUpPayload payload = SignUpPayload.builder()
 			.email("test@gmail.com")
@@ -145,7 +200,7 @@ public class AccountControllerTests {
 	}
 
 	@Test
-	@DisplayName("사용자가 입력한 값이 empty인 경우 회원가입 실패")
+	@DisplayName("회원가입 - Empty Payload 입력 - 실패")
 	void given_EmptyPayload_When_signUpProcess_Then_Failed_HTTP_CODE_400() throws Exception {
 		SignUpPayload payload = new SignUpPayload();
 
@@ -158,7 +213,7 @@ public class AccountControllerTests {
 	}
 
 	@ParameterizedTest
-	@DisplayName("사용자가 입력한 값이 이메일 형식이 아닐 경우 회원가입 실패")
+	@DisplayName("회원가입 - 잘못된 이메일 형식 - 실패")
 	@ValueSource(strings = {"sss.com", "abcdef", "abs@@"})
 	void given_isNotEmailRegexPayload_When_signUpProcess_Then_Failed_HTTP_CODE_400(String email) throws Exception {
 		SignUpPayload payload = SignUpPayload.builder()
@@ -174,7 +229,7 @@ public class AccountControllerTests {
 	}
 
 	@ParameterizedTest
-	@DisplayName("사용자가 입력한 값이 empty이거나 길이가 짧은 비밀번호일 경우 회원가입 실패")
+	@DisplayName("회원가입 - 잘못된 비밀번호 형식 - 실패")
 	@ValueSource(strings = {"", " ", "1234"})
 	void given_isEmptyOrShortPassword_When_signUpProcess_Then_Failed_HTTP_CODE_400(String password) throws Exception {
 		SignUpPayload payload = SignUpPayload.builder()

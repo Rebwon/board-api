@@ -45,6 +45,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public void update(Account account, AccountUpdatePayload payload) {
-		account.update(payload.getNickname(), this.passwordEncoder.encode(payload.getPassword()));
+		account.update(payload.getNickname(), this.passwordEncoder.encode(payload.getNewPassword()));
 	}
 }

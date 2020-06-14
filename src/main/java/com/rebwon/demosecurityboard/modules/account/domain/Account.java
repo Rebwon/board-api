@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter @Builder
 @DynamicUpdate
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Account extends BaseEntity {
 	@Id @GeneratedValue
