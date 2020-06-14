@@ -150,7 +150,6 @@ public class AccountControllerTests {
 	@Test
 	@DisplayName("회원가입 - 성공")
 	void given_Payload_When_signUpProcess_Then_Success_HTTP_CODE_200() throws Exception {
-		// TODO Refactor HTTP STATUS CODE 200 -> 201
 		SignUpPayload payload = SignUpPayload.builder()
 			.email("rebwon@gmail.com")
 			.password("password!")
@@ -162,7 +161,7 @@ public class AccountControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 			)
 			.andDo(print())
-			.andExpect(status().isOk());
+			.andExpect(status().isCreated());
 	}
 
 	@Test

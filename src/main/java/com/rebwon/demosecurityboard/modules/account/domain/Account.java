@@ -15,7 +15,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,7 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter @Builder
 @DynamicUpdate
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Account extends BaseEntity {
