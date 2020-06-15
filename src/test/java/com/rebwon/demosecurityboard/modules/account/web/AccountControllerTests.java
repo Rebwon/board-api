@@ -1,5 +1,8 @@
 package com.rebwon.demosecurityboard.modules.account.web;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,30 +14,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePayload;
 import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
+import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class AccountControllerTests {
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
+public class AccountControllerTests extends ControllerTests {
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -161,7 +156,28 @@ public class AccountControllerTests {
 				.contentType(MediaType.APPLICATION_JSON)
 			)
 			.andDo(print())
-			.andExpect(status().isCreated());
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("id").exists())
+			.andDo(document("create-account",
+				requestHeaders(
+					headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
+				),
+				requestFields(
+					fieldWithPath("email").type(JsonFieldType.STRING).description("<<email,email of new account>>"),
+					fieldWithPath("password").type(JsonFieldType.STRING).description("<<password,password of new account>>"),
+					fieldWithPath("nickname").type(JsonFieldType.STRING).description("<<nickname,nickname of new account>>")
+				),
+				responseFields(
+					fieldWithPath("id").description("identifier of new account"),
+					fieldWithPath("email").description("email of new account"),
+					fieldWithPath("password").description("password of new account"),
+					fieldWithPath("nickname").description("nickname of new account"),
+					fieldWithPath("createdDate").description("createdDate of new account"),
+					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
+					fieldWithPath("roles").description("roles of new account")
+					)
+				))
+		;
 	}
 
 	@Test

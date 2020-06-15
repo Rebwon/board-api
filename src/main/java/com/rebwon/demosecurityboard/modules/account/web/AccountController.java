@@ -41,7 +41,7 @@ public class AccountController {
 			return badRequest(errors);
 		}
 		Account account = accountService.register(payload);
-		return ResponseEntity.status(201).body("Register Success user:" + account.getNickname());
+		return ResponseEntity.status(201).body(account);
 	}
 
 	@GetMapping("/{id}")
