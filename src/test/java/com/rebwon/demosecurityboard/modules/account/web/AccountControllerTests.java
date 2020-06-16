@@ -105,7 +105,7 @@ public class AccountControllerTests extends ControllerTests {
 	@Test
 	@WithAccount("rebwon")
 	@DisplayName("정보수정 - 자신의 정보가 아닌 정보를 수정 - 실패")
-	void given_UpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
+	void given_UpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_401() throws Exception {
 		AccountUpdatePayload payload = AccountUpdatePayload.builder()
 			.nickname("rebon")
 			.newPassword("123456789")
@@ -117,7 +117,7 @@ public class AccountControllerTests extends ControllerTests {
 			.content(objectMapper.writeValueAsString(payload))
 		)
 			.andDo(print())
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -139,10 +139,10 @@ public class AccountControllerTests extends ControllerTests {
 	@Test
 	@WithAccount("rebwon")
 	@DisplayName("계정조회 - 자신의 정보가 아닌 정보 조회 - 실패")
-	void given_WithAuthMockUser_When_getAccount_Is_Not_Mine_Resource_Then_HTTP_CODE_400() throws Exception {
+	void given_WithAuthMockUser_When_getAccount_Is_Not_Mine_Resource_Then_HTTP_CODE_401() throws Exception {
 		mockMvc.perform(get("/api/accounts/123"))
 			.andDo(print())
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isUnauthorized());
 	}
 
 	@Test

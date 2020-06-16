@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePay
 import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
 import com.rebwon.demosecurityboard.modules.account.web.validator.AccountUpdateValidator;
 import com.rebwon.demosecurityboard.modules.account.web.validator.SignUpPayloadValidator;
+import com.rebwon.demosecurityboard.modules.index.IndexController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -48,17 +50,15 @@ public class AccountController {
 		}
 		Account newAccount = accountService.register(payload);
 		WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(newAccount.getId());
-		URI uri = selfLinkBuilder.toUri();
 		EntityModel<Account> model = EntityModel.of(newAccount);
-		model.add(linkTo(AccountController.class).slash(newAccount.getId()).withSelfRel());
-		model.add(selfLinkBuilder.withRel("update-account"));
-		return ResponseEntity.created(uri).body(model);
+		model.add(selfLinkBuilder.withSelfRel(), selfLinkBuilder.withRel("update-account"));
+		return ResponseEntity.created(selfLinkBuilder.toUri()).body(model);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity getAccount(@PathVariable Long id, @AuthAccount Account account) {
 		if(isNotOwner(id, account)) {
-			return ResponseEntity.badRequest().build();
+			return new ResponseEntity(HttpStatus.UNAUTHORIZED);
 		}
 		Account dbAccount = accountRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 		return ResponseEntity.ok(dbAccount);
@@ -75,7 +75,7 @@ public class AccountController {
 			return badRequest(errors);
 		}
 		if(isNotOwner(id, account)) {
-			return ResponseEntity.badRequest().body("Not an accessible resource");
+			return new ResponseEntity(HttpStatus.UNAUTHORIZED);
 		}
 		accountService.update(accountRepository.findById(id).get(), payload);
 		return ResponseEntity.noContent().build();
@@ -86,6 +86,7 @@ public class AccountController {
 	}
 
 	private ResponseEntity badRequest(Errors errors) {
-		return ResponseEntity.badRequest().body(errors);
+		return ResponseEntity.badRequest().body(EntityModel.of(errors,
+			linkTo(methodOn(IndexController.class).index()).withRel("index")));
 	}
 }
