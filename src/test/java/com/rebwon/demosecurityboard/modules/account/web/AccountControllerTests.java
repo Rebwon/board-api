@@ -1,6 +1,7 @@
 package com.rebwon.demosecurityboard.modules.account.web;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -30,6 +32,7 @@ import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 
 public class AccountControllerTests extends ControllerTests {
+	private static final String UTF8 = ";charset=UTF-8";
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -154,18 +157,32 @@ public class AccountControllerTests extends ControllerTests {
 		mockMvc.perform(post("/api/accounts")
 				.content(objectMapper.writeValueAsString(payload))
 				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaTypes.HAL_JSON)
 			)
 			.andDo(print())
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("id").exists())
+			.andExpect(header().exists(HttpHeaders.LOCATION))
+			.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE.concat(UTF8)))
+			.andExpect(jsonPath("_links.self").exists())
+			.andExpect(jsonPath("_links.update-account").exists())
 			.andDo(document("create-account",
+				links(
+					linkWithRel("self").description("link to self"),
+					linkWithRel("update-account").description("link to update an existing account")
+				),
 				requestHeaders(
+					headerWithName(HttpHeaders.ACCEPT).description("accept header"),
 					headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
 				),
 				requestFields(
 					fieldWithPath("email").type(JsonFieldType.STRING).description("<<email,email of new account>>"),
 					fieldWithPath("password").type(JsonFieldType.STRING).description("<<password,password of new account>>"),
 					fieldWithPath("nickname").type(JsonFieldType.STRING).description("<<nickname,nickname of new account>>")
+				),
+				responseHeaders(
+					headerWithName(HttpHeaders.LOCATION).description("location"),
+					headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
 				),
 				responseFields(
 					fieldWithPath("id").description("identifier of new account"),
@@ -174,7 +191,9 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("nickname").description("nickname of new account"),
 					fieldWithPath("createdDate").description("createdDate of new account"),
 					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
-					fieldWithPath("roles").description("roles of new account")
+					fieldWithPath("roles").description("roles of new account"),
+					fieldWithPath("_links.self.href").description("link to self"),
+					fieldWithPath("_links.update-account.href").description("link to update-account")
 					)
 				))
 		;

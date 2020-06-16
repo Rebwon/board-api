@@ -1,7 +1,13 @@
 package com.rebwon.demosecurityboard.modules.account.web;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import java.net.URI;
+
 import javax.validation.Valid;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +46,13 @@ public class AccountController {
 		if(errors.hasErrors()) {
 			return badRequest(errors);
 		}
-		Account account = accountService.register(payload);
-		return ResponseEntity.status(201).body(account);
+		Account newAccount = accountService.register(payload);
+		WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(newAccount.getId());
+		URI uri = selfLinkBuilder.toUri();
+		EntityModel<Account> model = EntityModel.of(newAccount);
+		model.add(linkTo(AccountController.class).slash(newAccount.getId()).withSelfRel());
+		model.add(selfLinkBuilder.withRel("update-account"));
+		return ResponseEntity.created(uri).body(model);
 	}
 
 	@GetMapping("/{id}")
