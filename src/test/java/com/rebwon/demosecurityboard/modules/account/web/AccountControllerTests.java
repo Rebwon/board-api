@@ -127,7 +127,34 @@ public class AccountControllerTests extends ControllerTests {
 		UserAccount account = getUserAccount();
 		mockMvc.perform(get("/api/accounts/"+ account.getAccount().getId()))
 			.andDo(print())
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("nickname").exists())
+			.andExpect(jsonPath("id").exists())
+			.andExpect(jsonPath("_links.self").exists())
+			.andExpect(jsonPath("_links.profile").exists())
+			.andExpect(jsonPath("_links.update-account").exists())
+			.andDo(document("get-account",
+				links(
+					linkWithRel("self").description("link to self"),
+					linkWithRel("update-account").description("link to update an existing account"),
+					linkWithRel("profile").description("link to profile")
+				),
+				responseHeaders(
+					headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+				),
+				relaxedResponseFields(
+					fieldWithPath("id").description("identifier of new account"),
+					fieldWithPath("email").description("email of new account"),
+					fieldWithPath("password").description("password of new account"),
+					fieldWithPath("nickname").description("nickname of new account"),
+					fieldWithPath("createdDate").description("createdDate of new account"),
+					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
+					fieldWithPath("roles").description("roles of new account"),
+					fieldWithPath("_links.self.href").description("link to self"),
+					fieldWithPath("_links.update-account.href").description("link to update-account"),
+					fieldWithPath("_links.profile.href").description("link to profile")
+				)
+			));
 	}
 
 	private UserAccount getUserAccount() {
@@ -169,7 +196,8 @@ public class AccountControllerTests extends ControllerTests {
 			.andDo(document("create-account",
 				links(
 					linkWithRel("self").description("link to self"),
-					linkWithRel("update-account").description("link to update an existing account")
+					linkWithRel("update-account").description("link to update an existing account"),
+					linkWithRel("profile").description("link to profile")
 				),
 				requestHeaders(
 					headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -193,7 +221,8 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
 					fieldWithPath("roles").description("roles of new account"),
 					fieldWithPath("_links.self.href").description("link to self"),
-					fieldWithPath("_links.update-account.href").description("link to update-account")
+					fieldWithPath("_links.update-account.href").description("link to update-account"),
+					fieldWithPath("_links.profile.href").description("link to profile")
 					)
 				))
 		;
@@ -213,7 +242,23 @@ public class AccountControllerTests extends ControllerTests {
 			.contentType(MediaType.APPLICATION_JSON)
 		)
 			.andDo(print())
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("content[0].objectName").exists())
+			.andExpect(jsonPath("content[0].defaultMessage").exists())
+			.andExpect(jsonPath("content[0].code").exists())
+			.andExpect(jsonPath("_links.index").exists())
+			.andDo(document("errors",
+				links(
+					linkWithRel("index").description("link to index")
+				),
+				relaxedResponseFields(
+					fieldWithPath("content[0].objectName").description("error objectName"),
+					fieldWithPath("content[0].code").description("error code"),
+					fieldWithPath("content[0].defaultMessage").description("error message"),
+					fieldWithPath("_links.index.href").description("link to index")
+				)
+			));
+		;
 	}
 
 	@Test

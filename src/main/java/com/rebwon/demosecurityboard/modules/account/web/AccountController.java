@@ -2,11 +2,10 @@ package com.rebwon.demosecurityboard.modules.account.web;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,8 @@ public class AccountController {
 		Account newAccount = accountService.register(payload);
 		WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(newAccount.getId());
 		EntityModel<Account> model = EntityModel.of(newAccount);
-		model.add(selfLinkBuilder.withSelfRel(), selfLinkBuilder.withRel("update-account"));
+		model.add(selfLinkBuilder.withSelfRel(), selfLinkBuilder.withRel("update-account"),
+			Link.of("/docs/index.html#resources-accounts-create").withRel("profile"));
 		return ResponseEntity.created(selfLinkBuilder.toUri()).body(model);
 	}
 
@@ -61,7 +61,18 @@ public class AccountController {
 			return new ResponseEntity(HttpStatus.UNAUTHORIZED);
 		}
 		Account dbAccount = accountRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-		return ResponseEntity.ok(dbAccount);
+		EntityModel<Account> model = EntityModel.of(dbAccount);
+		model.add(Link.of("/docs/index.html#resources-accounts-get").withRel("profile"),
+			linkTo(AccountController.class).slash(dbAccount.getId()).withSelfRel());
+
+		if(existsAccountAndOwner(id, dbAccount)) {
+			model.add(linkTo(AccountController.class).slash(dbAccount.getId()).withRel("update-account"));
+		}
+		return ResponseEntity.ok(model);
+	}
+
+	private boolean existsAccountAndOwner(Long id, Account account) {
+		return account != null && account.getId().equals(id);
 	}
 
 	@PutMapping("/{id}")
