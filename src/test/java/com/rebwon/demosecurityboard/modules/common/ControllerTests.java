@@ -8,11 +8,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -28,4 +32,12 @@ public abstract class ControllerTests {
 
 	@Autowired
 	protected ObjectMapper objectMapper;
+
+	protected static final String UTF8 = ";charset=UTF-8";
+
+	protected UserAccount getUserAccount() {
+		SecurityContext context = SecurityContextHolder.getContext();
+		Authentication authentication = context.getAuthentication();
+		return (UserAccount) authentication.getPrincipal();
+	}
 }

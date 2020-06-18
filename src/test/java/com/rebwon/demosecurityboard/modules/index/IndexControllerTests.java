@@ -6,6 +6,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
@@ -13,6 +14,7 @@ import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 class IndexControllerTests extends ControllerTests {
 
 	@Test
+	@DisplayName("인덱스 페이지 조회")
 	void indexPage() throws Exception {
 		mockMvc.perform(get("/api"))
 				.andExpect(status().isOk())

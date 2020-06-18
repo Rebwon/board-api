@@ -32,7 +32,6 @@ import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 
 public class AccountControllerTests extends ControllerTests {
-	private static final String UTF8 = ";charset=UTF-8";
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -157,12 +156,6 @@ public class AccountControllerTests extends ControllerTests {
 			));
 	}
 
-	private UserAccount getUserAccount() {
-		SecurityContext context = SecurityContextHolder.getContext();
-		Authentication authentication = context.getAuthentication();
-		return (UserAccount) authentication.getPrincipal();
-	}
-
 	@Test
 	@WithAccount("rebwon")
 	@DisplayName("계정조회 - 자신의 정보가 아닌 정보 조회 - 실패")
@@ -174,7 +167,7 @@ public class AccountControllerTests extends ControllerTests {
 
 	@Test
 	@DisplayName("회원가입 - 성공")
-	void given_Payload_When_signUpProcess_Then_Success_HTTP_CODE_200() throws Exception {
+	void given_Payload_When_signUpProcess_Then_Success_HTTP_CODE_201() throws Exception {
 		SignUpPayload payload = SignUpPayload.builder()
 			.email("rebwon@gmail.com")
 			.password("password!")
