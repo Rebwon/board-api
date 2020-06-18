@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.post.web.payload;
+package com.rebwon.demosecurityboard.modules.post.api.payload;
 
 import java.util.List;
 

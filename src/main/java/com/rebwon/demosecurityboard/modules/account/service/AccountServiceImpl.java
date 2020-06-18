@@ -10,8 +10,8 @@ import org.springframework.util.Assert;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
-import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePayload;
-import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.AccountUpdatePayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
 import lombok.RequiredArgsConstructor;
 
 @Service

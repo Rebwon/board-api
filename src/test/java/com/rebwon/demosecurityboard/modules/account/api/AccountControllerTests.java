@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.account.web;
+package com.rebwon.demosecurityboard.modules.account.api;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
@@ -19,16 +19,13 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
-import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePayload;
-import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.AccountUpdatePayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 
 public class AccountControllerTests extends ControllerTests {

@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.account.web.payload;
+package com.rebwon.demosecurityboard.modules.account.api.payload;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.post.web;
+package com.rebwon.demosecurityboard.modules.post.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
-import com.rebwon.demosecurityboard.modules.post.web.payload.PostCreatePayload;
+import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 
 class PostControllerTest extends ControllerTests {
 

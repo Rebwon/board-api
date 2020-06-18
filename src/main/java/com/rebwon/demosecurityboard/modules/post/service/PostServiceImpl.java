@@ -12,7 +12,7 @@ import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 import com.rebwon.demosecurityboard.modules.post.domain.Tag;
-import com.rebwon.demosecurityboard.modules.post.web.payload.PostCreatePayload;
+import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 import lombok.RequiredArgsConstructor;
 
 @Service

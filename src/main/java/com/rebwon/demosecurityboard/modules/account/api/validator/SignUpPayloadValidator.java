@@ -1,10 +1,10 @@
-package com.rebwon.demosecurityboard.modules.account.web.validator;
+package com.rebwon.demosecurityboard.modules.account.api.validator;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
-import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
 import lombok.RequiredArgsConstructor;
 
 @Component

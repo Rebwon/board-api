@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
 import com.rebwon.demosecurityboard.modules.account.service.AccountService;
-import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

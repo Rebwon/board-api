@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.account.web;
+package com.rebwon.demosecurityboard.modules.account.api;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -22,10 +22,10 @@ import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.AuthAccount;
 import com.rebwon.demosecurityboard.modules.account.service.AccountService;
-import com.rebwon.demosecurityboard.modules.account.web.payload.AccountUpdatePayload;
-import com.rebwon.demosecurityboard.modules.account.web.payload.SignUpPayload;
-import com.rebwon.demosecurityboard.modules.account.web.validator.AccountUpdateValidator;
-import com.rebwon.demosecurityboard.modules.account.web.validator.SignUpPayloadValidator;
+import com.rebwon.demosecurityboard.modules.account.api.payload.AccountUpdatePayload;
+import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
+import com.rebwon.demosecurityboard.modules.account.api.validator.AccountUpdateValidator;
+import com.rebwon.demosecurityboard.modules.account.api.validator.SignUpPayloadValidator;
 import com.rebwon.demosecurityboard.modules.index.IndexController;
 import lombok.RequiredArgsConstructor;
 
