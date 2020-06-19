@@ -43,8 +43,16 @@ public class AccountServiceImpl implements AccountService {
 		return this.accountRepository.save(account);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
-	public void update(Account account, AccountUpdatePayload payload) {
+	public Account getAccount(Long id, Account account) {
+		account.isNowOwner(id);
+		return this.accountRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+	}
+
+	@Override
+	public void update(Long id, Account account, AccountUpdatePayload payload) {
+		account.isNowOwner(id);
 		account.update(payload.getNickname(), this.passwordEncoder.encode(payload.getNewPassword()));
 	}
 }

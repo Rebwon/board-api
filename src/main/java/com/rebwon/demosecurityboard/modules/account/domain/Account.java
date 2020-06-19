@@ -14,6 +14,7 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.rebwon.demosecurityboard.modules.account.api.exception.NotOwnerException;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -51,7 +52,8 @@ public class Account extends BaseEntity {
 		this.password = password;
 	}
 
-	public boolean isNowOwner(Long id) {
-		return !this.id.equals(id);
+	public void isNowOwner(Long id) {
+		if(!this.id.equals(id))
+			throw new NotOwnerException();
 	}
 }
