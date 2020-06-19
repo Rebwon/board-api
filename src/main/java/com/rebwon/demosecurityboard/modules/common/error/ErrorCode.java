@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.common;
+package com.rebwon.demosecurityboard.modules.common.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

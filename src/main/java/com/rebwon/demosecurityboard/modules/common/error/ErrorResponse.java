@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.common;
+package com.rebwon.demosecurityboard.modules.common.error;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 

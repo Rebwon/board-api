@@ -1,6 +1,6 @@
 package com.rebwon.demosecurityboard.modules.common.exception;
 
-import com.rebwon.demosecurityboard.modules.common.ErrorCode;
+import com.rebwon.demosecurityboard.modules.common.error.ErrorCode;
 
 public class BusinessException extends RuntimeException {
 	private ErrorCode errorCode;

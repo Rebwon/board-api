@@ -1,4 +1,4 @@
-package com.rebwon.demosecurityboard.modules.common;
+package com.rebwon.demosecurityboard.modules.common.error;
 
 import java.nio.file.AccessDeniedException;
 
