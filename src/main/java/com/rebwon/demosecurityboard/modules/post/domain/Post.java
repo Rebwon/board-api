@@ -12,16 +12,13 @@ import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountSerializer;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity @Getter @Builder
+@Entity @Getter
 @DynamicInsert @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Post extends BaseEntity {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +32,7 @@ public class Post extends BaseEntity {
 	private Account writer;
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Category category;
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
 	private List<Tag> tags = new ArrayList<>();
 	private int countOfRecommend = 0;

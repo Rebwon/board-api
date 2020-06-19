@@ -56,7 +56,7 @@ class PostControllerTest extends ControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
-	@DisplayName("게시글 작성 - 실패")
+	@DisplayName("게시글 작성 - Empty Payload 입력 - 실패")
 	void given_emptyPayload_When_CreatePost_Then_Fail_HTTP_CODE_400() throws Exception {
 		PostCreatePayload payload = new PostCreatePayload();
 
