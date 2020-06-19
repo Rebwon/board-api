@@ -82,10 +82,28 @@ public class AccountControllerTests extends ControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
-	@DisplayName("정보수정 - 이미 존재하는 닉네임과 일치하지 않는 비밀번호 입력 - 실패")
-	void given_ValidateUpdatePayload_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
+	@DisplayName("정보수정 - 이미 존재하는 닉네임 입력 - 실패")
+	void given_ValidatePayloadNickname_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
 		AccountUpdatePayload payload = AccountUpdatePayload.builder()
 			.nickname("rebwon")
+			.newPassword("123456789!")
+			.newPasswordConfirm("123456789!")
+			.build();
+
+		mockMvc.perform(put("/api/accounts/123")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(payload))
+		)
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("정보수정 - 일치하지 않는 비밀번호 입력 - 실패")
+	void given_ValidatePayloadPassword_When_AccountUpdate_Then_return_HTTP_CODE_400() throws Exception {
+		AccountUpdatePayload payload = AccountUpdatePayload.builder()
+			.nickname("chulsu")
 			.newPassword("123456789!")
 			.newPasswordConfirm("1234567890!")
 			.build();
@@ -233,18 +251,20 @@ public class AccountControllerTests extends ControllerTests {
 		)
 			.andDo(print())
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("content[0].objectName").exists())
-			.andExpect(jsonPath("content[0].defaultMessage").exists())
-			.andExpect(jsonPath("content[0].code").exists())
+			.andExpect(jsonPath("message").exists())
+			.andExpect(jsonPath("status").exists())
+			.andExpect(jsonPath("errors").exists())
+			.andExpect(jsonPath("code").exists())
 			.andExpect(jsonPath("_links.index").exists())
 			.andDo(document("errors",
 				links(
 					linkWithRel("index").description("link to index")
 				),
 				relaxedResponseFields(
-					fieldWithPath("content[0].objectName").description("error objectName"),
-					fieldWithPath("content[0].code").description("error code"),
-					fieldWithPath("content[0].defaultMessage").description("error message"),
+					fieldWithPath("message").description("error message"),
+					fieldWithPath("status").description("error status"),
+					fieldWithPath("errors").description("detail error information"),
+					fieldWithPath("code").description("error code"),
 					fieldWithPath("_links.index.href").description("link to index")
 				)
 			));

@@ -54,4 +54,8 @@ public class Account extends BaseEntity {
 		this.nickname = nickname;
 		this.password = password;
 	}
+
+	public boolean isNowOwner(Long id) {
+		return !this.id.equals(id);
+	}
 }

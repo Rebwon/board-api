@@ -25,12 +25,12 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Post createPost(PostCreatePayload payload, Account account) {
 		Account writer = accountRepository.findById(account.getId()).orElseThrow(IllegalArgumentException::new);
-		List<Tag> tags = getTags(payload.getTagName());
+		List<Tag> tags = hasEmptyOrConvertTags(payload.getTagName());
 		Post post = Post.of(payload.getTitle(), payload.getContent(), writer, payload.getCategoryName(), tags);
 		return this.postRepository.save(post);
 	}
 
-	private List<Tag> getTags(List<String> tagName) {
+	private List<Tag> hasEmptyOrConvertTags(List<String> tagName) {
 		if(tagName == null)
 			return Collections.emptyList();
 		return tagName.stream().map(Tag::new).collect(Collectors.toList());
