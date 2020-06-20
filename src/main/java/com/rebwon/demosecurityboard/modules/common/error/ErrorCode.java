@@ -11,6 +11,7 @@ public enum ErrorCode {
 	FORBIDDEN(403, "C003", "Forbidden Request"),
 	NOT_FOUND(404, "C004", "Resource Not Found"),
 	METHOD_NOW_ALLOWED(405, "C005", "Method Now Allowed"),
+
 	EMAIL_DUPLICATION(400, "A001", "Duplicated Email"),
 	NICKNAME_DUPLICATION(400, "A002", "Duplicated Nickname"),
 	IS_NOT_OWNER(401, "A003", "You are not the owner of the requested resource"),

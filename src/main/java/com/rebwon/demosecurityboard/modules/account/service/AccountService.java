@@ -11,5 +11,5 @@ public interface AccountService extends UserDetailsService {
 
 	Account getAccount(Long id, Account account);
 
-	void update(Long id, Account account, AccountUpdatePayload payload);
+	Account update(Long id, Account account, AccountUpdatePayload payload);
 }

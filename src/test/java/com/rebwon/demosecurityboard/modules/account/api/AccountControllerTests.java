@@ -59,7 +59,37 @@ public class AccountControllerTests extends ControllerTests {
 				.content(objectMapper.writeValueAsString(payload))
 		)
 			.andDo(print())
-			.andExpect(status().isNoContent());
+			.andExpect(status().isNoContent())
+			.andDo(document("update-account",
+				links(
+					linkWithRel("self").description("link to self"),
+					linkWithRel("update-account").description("link to update an existing account"),
+					linkWithRel("profile").description("link to profile")
+				),
+				requestHeaders(
+					headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+				),
+				requestFields(
+					fieldWithPath("nickname").description("nickname of update account"),
+					fieldWithPath("newPassword").description("newPassword of update account"),
+					fieldWithPath("newPasswordConfirm").description("newPasswordConfirm of update account")
+				),
+				responseHeaders(
+					headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+				),
+				responseFields(
+					fieldWithPath("id").description("identifier of new account"),
+					fieldWithPath("email").description("email of new account"),
+					fieldWithPath("password").description("password of new account"),
+					fieldWithPath("nickname").description("nickname of new account"),
+					fieldWithPath("createdDate").description("createdDate of new account"),
+					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
+					fieldWithPath("roles").description("roles of new account"),
+					fieldWithPath("_links.self.href").description("link to self"),
+					fieldWithPath("_links.update-account.href").description("link to update-account"),
+					fieldWithPath("_links.profile.href").description("link to profile")
+				)
+			));
 	}
 
 	@Test
@@ -231,9 +261,8 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")
-					)
-				))
-		;
+				)
+			));
 	}
 
 	@Test
@@ -256,7 +285,7 @@ public class AccountControllerTests extends ControllerTests {
 			.andExpect(jsonPath("errors").exists())
 			.andExpect(jsonPath("code").exists())
 			.andExpect(jsonPath("_links.index").exists())
-			.andDo(document("errors",
+			.andDo(document("errors-account",
 				links(
 					linkWithRel("index").description("link to index")
 				),

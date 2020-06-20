@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,10 +50,12 @@ public class AccountController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Void> updateAccount(@PathVariable Long id, @RequestBody @Valid AccountUpdatePayload payload,
+	public ResponseEntity<EntityModel<Account>> updateAccount(@PathVariable Long id, @RequestBody @Valid AccountUpdatePayload payload,
 		@AuthAccount Account account) {
 		accountUpdateValidator.validate(payload);
-		accountService.update(id, account, payload);
-		return ResponseEntity.noContent().build();
+		Account updateAccount = accountService.update(id, account, payload);
+		AccountResponse response = AccountResponse.of(updateAccount,
+			Link.of("/docs/index.html#resources-events-update").withRel("profile"));
+		return new ResponseEntity<>(response.getModel(), HttpStatus.NO_CONTENT);
 	}
 }

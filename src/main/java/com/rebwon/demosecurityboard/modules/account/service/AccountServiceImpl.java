@@ -37,7 +37,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public Account register(SignUpPayload payload) {
-		Assert.notNull(payload, "Input Payload is Null!");
 		Account account = Account.of(payload.getEmail(),
 			this.passwordEncoder.encode(payload.getPassword()), payload.getNickname());
 		return this.accountRepository.save(account);
@@ -51,8 +50,9 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public void update(Long id, Account account, AccountUpdatePayload payload) {
+	public Account update(Long id, Account account, AccountUpdatePayload payload) {
 		account.isNowOwner(id);
 		account.update(payload.getNickname(), this.passwordEncoder.encode(payload.getNewPassword()));
+		return account;
 	}
 }
