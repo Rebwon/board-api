@@ -19,12 +19,16 @@ class IndexControllerTests extends ControllerTests {
 		mockMvc.perform(get("/api"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("_links.accounts").exists())
+				.andExpect(jsonPath("_links.posts").exists())
 				.andDo(document("index",
 					links(
-						linkWithRel("accounts").description("link to accounts")
+						linkWithRel("accounts").description("link to accounts"),
+						linkWithRel("posts").description("link to posts")
 					),
-					responseFields(fieldWithPath("_links.accounts.href").description("link to accounts"))
-					))
-		;
+					responseFields(
+						fieldWithPath("_links.accounts.href").description("link to accounts"),
+						fieldWithPath("_links.posts.href").description("link to posts")
+					)
+				));
 	}
 }
