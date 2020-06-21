@@ -9,8 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
+import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 
 class PostControllerTests extends ControllerTests {
@@ -32,6 +36,15 @@ class PostControllerTests extends ControllerTests {
 
 	@Autowired
 	private PostRepository postRepository;
+	private Post post;
+
+	@BeforeEach
+	void setUp() {
+		Account account = Account.of("chuslu@naver.com", "password!", "chulsu");
+		accountRepository.save(account);
+		post = Post.of("test", "test contents", account, "test", Collections.emptyList());
+		postRepository.save(post);
+	}
 
 	@AfterEach
 	void tearDown() {
@@ -141,4 +154,11 @@ class PostControllerTests extends ControllerTests {
 			));
 	}
 
+	@Test
+	@DisplayName("게시글 1건 조회 - 성공")
+	void when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
+		mockMvc.perform(get("/api/posts/" + post.getId()))
+				.andDo(print())
+				.andExpect(status().isOk());
+	}
 }
