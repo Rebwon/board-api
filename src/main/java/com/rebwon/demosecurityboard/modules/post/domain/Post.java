@@ -27,7 +27,7 @@ public class Post extends BaseEntity {
 	private String title;
 	@Lob @Column(nullable = false)
 	private String content;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JsonSerialize(using = AccountSerializer.class)
 	private Account writer;
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -46,5 +46,9 @@ public class Post extends BaseEntity {
 		post.category = new Category(categoryName);
 		post.tags = tags;
 		return post;
+	}
+
+	public boolean isSameWriter(Account account) {
+		return writer.equals(account);
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
+import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
@@ -36,14 +37,14 @@ class PostControllerTests extends ControllerTests {
 
 	@Autowired
 	private PostRepository postRepository;
-	private Post post;
+	private Post setupPost;
 
 	@BeforeEach
 	void setUp() {
 		Account account = Account.of("chuslu@naver.com", "password!", "chulsu");
 		accountRepository.save(account);
-		post = Post.of("test", "test contents", account, "test", Collections.emptyList());
-		postRepository.save(post);
+		setupPost = Post.of("test", "test contents", account, "test", Collections.emptyList());
+		postRepository.save(setupPost);
 	}
 
 	@AfterEach
@@ -155,10 +156,24 @@ class PostControllerTests extends ControllerTests {
 	}
 
 	@Test
-	@DisplayName("게시글 1건 조회 - 성공")
+	@DisplayName("비인증 사용자가 게시글 1건 조회 - 성공")
 	void when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
-		mockMvc.perform(get("/api/posts/" + post.getId()))
+		mockMvc.perform(get("/api/posts/" + setupPost.getId()))
 				.andDo(print())
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("인증된 사용자가 게시글 1건 조회 - 성공")
+	void given_AuthAccount_Posts_when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
+		UserAccount userAccount = getUserAccount();
+		Account authAccount = userAccount.getAccount();
+		Post post = postRepository.save(
+			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Collections.emptyList()));
+
+		mockMvc.perform(get("/api/posts/" + post.getId()))
+			.andDo(print())
+			.andExpect(status().isOk());
 	}
 }

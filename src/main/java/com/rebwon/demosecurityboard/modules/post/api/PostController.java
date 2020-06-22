@@ -40,7 +40,12 @@ public class PostController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity getPost(@PathVariable Long id, @AuthAccount Account account) {
-		Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-		return ResponseEntity.ok(post);
+		Post dbPost = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+		EntityModel<Post> model = EntityModel.of(dbPost);
+		if(dbPost.isSameWriter(account)) {
+			model.add(linkTo(PostController.class).slash(dbPost.getId()).withRel("update-post"));
+		}
+		model.add(linkTo(PostController.class).slash(dbPost.getId()).withSelfRel());
+		return ResponseEntity.ok(model);
 	}
 }
