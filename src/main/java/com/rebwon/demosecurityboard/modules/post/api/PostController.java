@@ -2,6 +2,8 @@ package com.rebwon.demosecurityboard.modules.post.api;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
@@ -40,7 +42,11 @@ public class PostController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity getPost(@PathVariable Long id, @AuthAccount Account account) {
-		Post dbPost = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+		Optional<Post> optionalPost = postRepository.findById(id);
+		if(optionalPost.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Post dbPost = optionalPost.get();
 		EntityModel<Post> model = EntityModel.of(dbPost);
 		if(dbPost.isSameWriter(account)) {
 			model.add(linkTo(PostController.class).slash(dbPost.getId()).withRel("update-post"));

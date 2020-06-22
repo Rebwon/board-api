@@ -160,7 +160,8 @@ class PostControllerTests extends ControllerTests {
 	void when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
 		mockMvc.perform(get("/api/posts/" + setupPost.getId()))
 				.andDo(print())
-				.andExpect(status().isOk());
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("_links.self").exists());
 	}
 
 	@Test
@@ -174,6 +175,17 @@ class PostControllerTests extends ControllerTests {
 
 		mockMvc.perform(get("/api/posts/" + post.getId()))
 			.andDo(print())
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("_links.self").exists())
+			.andExpect(jsonPath("_links.update-post").exists())
+		;
+	}
+
+	@Test
+	@DisplayName("존재하지 않는 게시글 1건 조회 - 실패")
+	void when_getPost_Then_Fail_HTTP_CODE_404() throws Exception {
+		mockMvc.perform(get("/api/posts/123"))
+			.andDo(print())
+			.andExpect(status().isNotFound());
 	}
 }
