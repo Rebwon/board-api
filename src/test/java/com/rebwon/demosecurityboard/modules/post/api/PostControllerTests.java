@@ -178,7 +178,31 @@ class PostControllerTests extends ControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("_links.self").exists())
 			.andExpect(jsonPath("_links.update-post").exists())
-		;
+			.andDo(document("get-post",
+				links(
+					linkWithRel("self").description("link to self"),
+					linkWithRel("update-post").description("link to update an existing post")
+				),
+				responseHeaders(
+					headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+				),
+				responseFields(
+					fieldWithPath("id").description("identifier of new post"),
+					fieldWithPath("title").description("title of new post"),
+					fieldWithPath("content").description("content of new post"),
+					fieldWithPath("writer.id").description("post writer identifier"),
+					fieldWithPath("writer.nickname").description("post writer nickname"),
+					fieldWithPath("category.id").description("post category identifier"),
+					fieldWithPath("category.name").description("post category name"),
+					fieldWithPath("tags.[]").description("post tags"),
+					fieldWithPath("countOfRecommend").description("post Recommendation Count"),
+					fieldWithPath("commented").description("post comment status"),
+					fieldWithPath("createdDate").description("createdDate of new post"),
+					fieldWithPath("modifiedDate").description("modifiedDate of new post"),
+					fieldWithPath("_links.self.href").description("link to self"),
+					fieldWithPath("_links.update-post.href").description("link to update-post")
+				)
+			));
 	}
 
 	@Test
