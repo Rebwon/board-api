@@ -5,6 +5,6 @@ import com.rebwon.demosecurityboard.modules.common.exception.BusinessException;
 
 public class NotOwnerException extends BusinessException {
 	public NotOwnerException() {
-		super(null, ErrorCode.IS_NOT_OWNER);
+		super(ErrorCode.IS_NOT_OWNER);
 	}
 }

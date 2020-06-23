@@ -2,8 +2,6 @@ package com.rebwon.demosecurityboard.modules.post.api;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AuthAccount;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
-import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 import com.rebwon.demosecurityboard.modules.post.service.PostService;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostController {
 	private final PostService postService;
-	private final PostRepository postRepository;
 
 	@PostMapping
 	public ResponseEntity createPost(@RequestBody @Valid PostCreatePayload payload, @AuthAccount Account account) {
@@ -42,11 +38,7 @@ public class PostController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity getPost(@PathVariable Long id, @AuthAccount Account account) {
-		Optional<Post> optionalPost = postRepository.findById(id);
-		if(optionalPost.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		Post dbPost = optionalPost.get();
+		Post dbPost = postService.getPost(id);
 		EntityModel<Post> model = EntityModel.of(dbPost);
 		if(dbPost.isSameWriter(account)) {
 			model.add(linkTo(PostController.class).slash(dbPost.getId()).withRel("update-post"));

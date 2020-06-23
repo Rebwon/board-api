@@ -5,6 +5,6 @@ import com.rebwon.demosecurityboard.modules.common.exception.BusinessException;
 
 public class PasswordMissMatchException extends BusinessException {
 	public PasswordMissMatchException() {
-		super("", ErrorCode.PASSWORD_MISS_MATCHED);
+		super(ErrorCode.PASSWORD_MISS_MATCHED);
 	}
 }

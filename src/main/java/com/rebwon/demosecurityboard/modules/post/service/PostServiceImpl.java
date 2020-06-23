@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
+import com.rebwon.demosecurityboard.modules.post.api.exception.PostNotFoundException;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 import com.rebwon.demosecurityboard.modules.post.domain.Tag;
@@ -34,5 +35,11 @@ public class PostServiceImpl implements PostService {
 		if(tagName == null)
 			return Collections.emptyList();
 		return tagName.stream().map(Tag::new).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Post getPost(Long postId) {
+		return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 	}
 }
