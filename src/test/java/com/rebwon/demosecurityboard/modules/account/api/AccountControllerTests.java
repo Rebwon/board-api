@@ -85,6 +85,7 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("createdDate").description("createdDate of new account"),
 					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
 					fieldWithPath("roles").description("roles of new account"),
+					fieldWithPath("activityScore.score").description("activity score of new account"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")
@@ -258,6 +259,7 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("createdDate").description("createdDate of new account"),
 					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
 					fieldWithPath("roles").description("roles of new account"),
+					fieldWithPath("activityScore.score").description("activity score of new account"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")

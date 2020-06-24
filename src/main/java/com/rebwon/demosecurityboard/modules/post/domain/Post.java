@@ -36,7 +36,6 @@ public class Post extends BaseEntity {
 	@JoinColumn(name = "post_id")
 	private List<Tag> tags = new ArrayList<>();
 	private int countOfRecommend = 0;
-	private boolean commented = false;
 
 	public static Post of(String title, String content, Account writer, String categoryName, List<Tag> tags) {
 		Post post = new Post();

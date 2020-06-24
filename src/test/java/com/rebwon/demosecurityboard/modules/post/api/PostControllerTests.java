@@ -116,7 +116,6 @@ class PostControllerTests extends ControllerTests {
 					fieldWithPath("tags.[2].id").description("tag identifier of new post"),
 					fieldWithPath("tags.[2].name").description("tag name of new post"),
 					fieldWithPath("countOfRecommend").description("countOfRecommend of new post"),
-					fieldWithPath("commented").description("commented of new post"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-post.href").description("link to update-post")
 				)
@@ -156,15 +155,6 @@ class PostControllerTests extends ControllerTests {
 	}
 
 	@Test
-	@DisplayName("비인증 사용자가 게시글 1건 조회 - 성공")
-	void when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
-		mockMvc.perform(get("/api/posts/" + setupPost.getId()))
-				.andDo(print())
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("_links.self").exists());
-	}
-
-	@Test
 	@WithAccount("rebwon")
 	@DisplayName("인증된 사용자가 게시글 1건 조회 - 성공")
 	void given_AuthAccount_Posts_when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
@@ -196,7 +186,6 @@ class PostControllerTests extends ControllerTests {
 					fieldWithPath("category.name").description("post category name"),
 					fieldWithPath("tags.[]").description("post tags"),
 					fieldWithPath("countOfRecommend").description("post Recommendation Count"),
-					fieldWithPath("commented").description("post comment status"),
 					fieldWithPath("createdDate").description("createdDate of new post"),
 					fieldWithPath("modifiedDate").description("modifiedDate of new post"),
 					fieldWithPath("_links.self.href").description("link to self"),

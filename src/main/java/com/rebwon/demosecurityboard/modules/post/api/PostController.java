@@ -2,10 +2,11 @@ package com.rebwon.demosecurityboard.modules.post.api;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.net.URI;
+
 import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,10 +31,10 @@ public class PostController {
 	@PostMapping
 	public ResponseEntity createPost(@RequestBody @Valid PostCreatePayload payload, @AuthAccount Account account) {
 		Post newPost = postService.createPost(payload, account);
-		WebMvcLinkBuilder selfLinkBuilder = linkTo(PostController.class).slash(newPost.getId());
 		EntityModel<Post> model = EntityModel.of(newPost);
-		model.add(selfLinkBuilder.withSelfRel(), selfLinkBuilder.withRel("update-post"));
-		return ResponseEntity.created(selfLinkBuilder.toUri()).body(model);
+		model.add(linkTo(PostController.class).slash(newPost.getId()).withSelfRel(),
+			linkTo(PostController.class).slash(newPost.getId()).withRel("update-post"));
+		return ResponseEntity.created(URI.create("/api/posts/" + newPost.getId())).body(model);
 	}
 
 	@GetMapping("/{id}")

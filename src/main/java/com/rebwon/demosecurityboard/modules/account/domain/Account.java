@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.rebwon.demosecurityboard.modules.account.api.exception.NotOwnerException;
+import com.rebwon.demosecurityboard.modules.account.domain.activity.ActivityCondition;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,8 @@ public class Account extends BaseEntity {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private Set<AccountRole> roles;
+	@Column(name = "activity_score", nullable = false)
+	private ActivityScore activityScore;
 
 	public static Account of(String email, String password, String nickname) {
 		Account account = new Account();
@@ -44,6 +47,7 @@ public class Account extends BaseEntity {
 		account.password = password;
 		account.nickname = nickname;
 		account.roles = Set.of(AccountRole.USER);
+		account.activityScore = ActivityScore.ZERO;
 		return account;
 	}
 
@@ -55,5 +59,13 @@ public class Account extends BaseEntity {
 	public void isNowOwner(Long id) {
 		if(!this.id.equals(id))
 			throw new NotOwnerException();
+	}
+
+	public void increaseActivityScore(ActivityCondition condition) {
+		this.activityScore = activityScore.increase(condition);
+	}
+
+	public void decreaseActivityScore(ActivityCondition condition) {
+		this.activityScore = activityScore.decrease(condition);
 	}
 }

@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rebwon.demosecurityboard.modules.account.api.exception.AccountNotFoundException;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
@@ -45,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account getAccount(Long id, Account account) {
 		account.isNowOwner(id);
-		return this.accountRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+		return this.accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
 	}
 
 	@Override
