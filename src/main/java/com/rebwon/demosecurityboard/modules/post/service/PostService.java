@@ -5,6 +5,7 @@ import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 
 public interface PostService {
-	Post createPost(PostCreatePayload payload, Account account);
-	Post getPost(Long postId);
+	Post create(PostCreatePayload payload, Account account);
+	Post findOne(Long postId);
+	void delete(Long postId, Account account);
 }

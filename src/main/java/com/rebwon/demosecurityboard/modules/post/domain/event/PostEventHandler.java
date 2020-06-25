@@ -24,4 +24,11 @@ public class PostEventHandler {
 			.orElseThrow(AccountNotFoundException::new);
 		account.increaseActivityScore(new PostActivityCondition());
 	}
+
+	@EventListener
+	public void handlePostDeletedEvent(PostDeletedEvent deletedEvent) {
+		Account account = accountRepository.findById(deletedEvent.getWriterId())
+			.orElseThrow(AccountNotFoundException::new);
+		account.decreaseActivityScore(new PostActivityCondition());
+	}
 }

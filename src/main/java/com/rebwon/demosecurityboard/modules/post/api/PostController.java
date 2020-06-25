@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ public class PostController {
 
 	@PostMapping
 	public ResponseEntity createPost(@RequestBody @Valid PostCreatePayload payload, @AuthAccount Account account) {
-		Post newPost = postService.createPost(payload, account);
+		Post newPost = postService.create(payload, account);
 		EntityModel<Post> model = EntityModel.of(newPost);
 		model.add(linkTo(PostController.class).slash(newPost.getId()).withSelfRel(),
 			linkTo(PostController.class).slash(newPost.getId()).withRel("update-post"));
@@ -39,12 +40,18 @@ public class PostController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity getPost(@PathVariable Long id, @AuthAccount Account account) {
-		Post dbPost = postService.getPost(id);
+		Post dbPost = postService.findOne(id);
 		EntityModel<Post> model = EntityModel.of(dbPost);
 		if(dbPost.isSameWriter(account)) {
 			model.add(linkTo(PostController.class).slash(dbPost.getId()).withRel("update-post"));
 		}
 		model.add(linkTo(PostController.class).slash(dbPost.getId()).withSelfRel());
 		return ResponseEntity.ok(model);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity deletePost(@PathVariable Long id, @AuthAccount Account account) {
+		postService.delete(id, account);
+		return ResponseEntity.noContent().build();
 	}
 }

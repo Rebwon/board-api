@@ -37,15 +37,6 @@ class PostControllerTests extends ControllerTests {
 
 	@Autowired
 	private PostRepository postRepository;
-	private Post setupPost;
-
-	@BeforeEach
-	void setUp() {
-		Account account = Account.of("chuslu@naver.com", "password!", "chulsu");
-		accountRepository.save(account);
-		setupPost = Post.of("test", "test contents", account, "test", Collections.emptyList());
-		postRepository.save(setupPost);
-	}
 
 	@AfterEach
 	void tearDown() {
@@ -200,5 +191,19 @@ class PostControllerTests extends ControllerTests {
 		mockMvc.perform(get("/api/posts/123"))
 			.andDo(print())
 			.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("게시글 삭제 - 성공")
+	void given_PostId_When_Delete_Then_Success_HTTP_CODE_204() throws Exception {
+		UserAccount userAccount = getUserAccount();
+		Account authAccount = userAccount.getAccount();
+		Post post = postRepository.save(
+			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Collections.emptyList()));
+
+		mockMvc.perform(delete("/api/posts/" + post.getId()))
+				.andDo(print())
+				.andExpect(status().isNoContent());
 	}
 }

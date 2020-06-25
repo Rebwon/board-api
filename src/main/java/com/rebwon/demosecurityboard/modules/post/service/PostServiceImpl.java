@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rebwon.demosecurityboard.modules.account.api.exception.AccountNotFoundException;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.post.api.exception.PostNotFoundException;
@@ -16,6 +17,7 @@ import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 import com.rebwon.demosecurityboard.modules.post.domain.Tag;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 import com.rebwon.demosecurityboard.modules.post.domain.event.PostCreatedEvent;
+import com.rebwon.demosecurityboard.modules.post.domain.event.PostDeletedEvent;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,8 +29,8 @@ public class PostServiceImpl implements PostService {
 	private final ApplicationEventPublisher publisher;
 
 	@Override
-	public Post createPost(PostCreatePayload payload, Account account) {
-		Account writer = accountRepository.findById(account.getId()).orElseThrow(IllegalArgumentException::new);
+	public Post create(PostCreatePayload payload, Account account) {
+		Account writer = accountRepository.findById(account.getId()).orElseThrow(AccountNotFoundException::new);
 		List<Tag> tags = hasEmptyOrConvertTags(payload.getTagName());
 		Post post = this.postRepository
 			.save(Post.of(payload.getTitle(), payload.getContent(), writer, payload.getCategoryName(), tags));
@@ -44,7 +46,16 @@ public class PostServiceImpl implements PostService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Post getPost(Long postId) {
+	public Post findOne(Long postId) {
 		return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+	}
+
+	@Override
+	public void delete(Long postId, Account account) {
+		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+		if(post.isSameWriter(account)) {
+			publisher.publishEvent(new PostDeletedEvent(post));
+			postRepository.delete(post);
+		}
 	}
 }
