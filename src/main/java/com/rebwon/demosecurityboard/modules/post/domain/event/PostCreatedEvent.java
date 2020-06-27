@@ -10,4 +10,8 @@ public class PostCreatedEvent {
 	public Long getWriterId() {
 		return post.getWriter().getId();
 	}
+
+	public Long getPostId() {
+		return post.getId();
+	}
 }

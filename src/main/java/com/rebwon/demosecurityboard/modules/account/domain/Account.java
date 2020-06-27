@@ -1,5 +1,6 @@
 package com.rebwon.demosecurityboard.modules.account.domain;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.rebwon.demosecurityboard.modules.account.api.exception.NotOwnerException;
-import com.rebwon.demosecurityboard.modules.account.domain.activity.ActivityCondition;
+import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -38,8 +39,7 @@ public class Account extends BaseEntity {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private Set<AccountRole> roles;
-	@Column(name = "activity_score", nullable = false)
-	private ActivityScore activityScore;
+	private int totalScore = 0;
 
 	public static Account of(String email, String password, String nickname) {
 		Account account = new Account();
@@ -47,7 +47,6 @@ public class Account extends BaseEntity {
 		account.password = password;
 		account.nickname = nickname;
 		account.roles = Set.of(AccountRole.USER);
-		account.activityScore = ActivityScore.ZERO;
 		return account;
 	}
 
@@ -61,11 +60,10 @@ public class Account extends BaseEntity {
 			throw new NotOwnerException();
 	}
 
-	public void increaseActivityScore(ActivityCondition condition) {
-		this.activityScore = activityScore.increase(condition);
-	}
-
-	public void decreaseActivityScore(ActivityCondition condition) {
-		this.activityScore = activityScore.decrease(condition);
+	public void calculateTotalScore(List<Activity> activities) {
+		this.totalScore = activities.stream()
+			.filter(a -> a.getAccountId().equals(this.id))
+			.mapToInt(Activity::calculateScore)
+			.sum();
 	}
 }

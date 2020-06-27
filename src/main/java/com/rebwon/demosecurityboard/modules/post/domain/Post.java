@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountSerializer;
+import com.rebwon.demosecurityboard.modules.comment.domain.Comment;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -36,6 +37,8 @@ public class Post extends BaseEntity {
 	@JoinColumn(name = "post_id")
 	private List<Tag> tags = new ArrayList<>();
 	private int countOfRecommend = 0;
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments = new ArrayList<>();
 
 	public static Post of(String title, String content, Account writer, String categoryName, List<Tag> tags) {
 		Post post = new Post();
@@ -49,5 +52,13 @@ public class Post extends BaseEntity {
 
 	public boolean isSameWriter(Account account) {
 		return writer.equals(account);
+	}
+
+	public void write(Comment comment) {
+		this.comments.add(comment);
+	}
+
+	public boolean hasEmptyComments() {
+		return comments.isEmpty();
 	}
 }

@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Account getAccount(Long id, Account account) {
+	public Account findAccount(Long id, Account account) {
 		account.isNowOwner(id);
 		return this.accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
 	}

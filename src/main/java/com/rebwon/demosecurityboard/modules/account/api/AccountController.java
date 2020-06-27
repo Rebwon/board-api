@@ -42,8 +42,8 @@ public class AccountController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<EntityModel<Account>> getAccount(@PathVariable Long id, @AuthAccount Account account) {
-		Account dbAccount = accountService.getAccount(id, account);
+	public ResponseEntity<EntityModel<Account>> findAccount(@PathVariable Long id, @AuthAccount Account account) {
+		Account dbAccount = accountService.findAccount(id, account);
 		AccountResponse response = AccountResponse.of(dbAccount,
 			Link.of("/docs/index.html#resources-accounts-get").withRel("profile"));
 		return ResponseEntity.ok(response.getModel());

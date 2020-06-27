@@ -1,14 +1,12 @@
 package com.rebwon.demosecurityboard.modules.post.domain.event;
-
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rebwon.demosecurityboard.modules.account.api.exception.AccountNotFoundException;
-import com.rebwon.demosecurityboard.modules.account.domain.Account;
-import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
-import com.rebwon.demosecurityboard.modules.account.domain.activity.PostActivityCondition;
+import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
+import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
+import com.rebwon.demosecurityboard.modules.activity.domain.PostScoreCondition;
 import lombok.RequiredArgsConstructor;
 
 @Async
@@ -16,19 +14,17 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class PostEventHandler {
-	private final AccountRepository accountRepository;
+	private final ActivityRepository activityRepository;
 
 	@EventListener
 	public void handlePostCreatedEvent(PostCreatedEvent createdEvent) {
-		Account account = accountRepository.findById(createdEvent.getWriterId())
-			.orElseThrow(AccountNotFoundException::new);
-		account.increaseActivityScore(new PostActivityCondition());
+		Activity activity = Activity.writePost(createdEvent.getWriterId(), createdEvent.getPostId(),
+			new PostScoreCondition());
+		activityRepository.save(activity);
 	}
 
 	@EventListener
 	public void handlePostDeletedEvent(PostDeletedEvent deletedEvent) {
-		Account account = accountRepository.findById(deletedEvent.getWriterId())
-			.orElseThrow(AccountNotFoundException::new);
-		account.decreaseActivityScore(new PostActivityCondition());
+		activityRepository.deleteActivityByAccountIdEqualsAndPostIdEquals(deletedEvent.getWriterId(), deletedEvent.getPostId());
 	}
 }

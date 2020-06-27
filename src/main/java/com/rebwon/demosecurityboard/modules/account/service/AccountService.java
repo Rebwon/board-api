@@ -9,7 +9,7 @@ import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
 public interface AccountService extends UserDetailsService {
 	Account register(SignUpPayload payload);
 
-	Account getAccount(Long id, Account account);
+	Account findAccount(Long id, Account account);
 
 	Account update(Long id, Account account, AccountUpdatePayload payload);
 }

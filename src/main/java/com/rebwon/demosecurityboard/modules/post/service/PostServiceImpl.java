@@ -53,7 +53,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public void delete(Long postId, Account account) {
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-		if(post.isSameWriter(account)) {
+		if(post.isSameWriter(account) && post.hasEmptyComments()) {
 			publisher.publishEvent(new PostDeletedEvent(post));
 			postRepository.delete(post);
 		}
