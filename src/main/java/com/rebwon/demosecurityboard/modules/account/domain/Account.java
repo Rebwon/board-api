@@ -63,7 +63,7 @@ public class Account extends BaseEntity {
 	public void calculateTotalScore(List<Activity> activities) {
 		this.totalScore = activities.stream()
 			.filter(a -> a.getAccountId().equals(this.id))
-			.mapToInt(Activity::calculateScore)
+			.mapToInt(Activity::getScore)
 			.sum();
 	}
 }

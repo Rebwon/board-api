@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,15 +25,14 @@ public class Activity extends BaseEntity {
 	private Long accountId;
 	private Long postId;
 	private Long commentId;
-	@Transient
-	private ScoreCondition condition;
+	private int score;
 
 	private Activity(Long accountId, Long postId, Long commentId,
 		ScoreCondition condition) {
 		this.accountId = accountId;
 		this.postId = postId;
 		this.commentId = commentId;
-		this.condition = condition;
+		this.score = condition.getScore();
 	}
 
 	public static Activity writePost(Long accountId, Long postId, ScoreCondition condition) {
@@ -43,9 +41,5 @@ public class Activity extends BaseEntity {
 
 	public static Activity writeComment(Long accountId, Long commentId, ScoreCondition condition) {
 		return new Activity(accountId, null, commentId, condition);
-	}
-
-	public Integer calculateScore() {
-		return this.condition.getScore();
 	}
 }

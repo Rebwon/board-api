@@ -25,6 +25,9 @@ import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
+import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
+import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
+import com.rebwon.demosecurityboard.modules.activity.domain.PostScoreCondition;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
@@ -37,6 +40,9 @@ class PostControllerTests extends ControllerTests {
 
 	@Autowired
 	private PostRepository postRepository;
+
+	@Autowired
+	private ActivityRepository activityRepository;
 
 	@AfterEach
 	void tearDown() {
@@ -203,6 +209,8 @@ class PostControllerTests extends ControllerTests {
 		Account authAccount = userAccount.getAccount();
 		Post post = postRepository.save(
 			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Collections.emptyList()));
+		activityRepository.save(
+			Activity.writePost(authAccount.getId(), post.getId(), new PostScoreCondition()));
 
 		mockMvc.perform(delete("/api/posts/" + post.getId()))
 				.andDo(print())
