@@ -39,7 +39,7 @@ public class PostController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity getPost(@PathVariable Long id, @AuthAccount Account account) {
+	public ResponseEntity findOne(@PathVariable Long id, @AuthAccount Account account) {
 		Post dbPost = postService.findOne(id);
 		EntityModel<Post> model = EntityModel.of(dbPost);
 		if(dbPost.isSameWriter(account)) {

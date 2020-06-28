@@ -39,7 +39,7 @@ public class Account extends BaseEntity {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private Set<AccountRole> roles;
-	private int totalScore = 0;
+	private Integer totalScore = 0;
 
 	public static Account of(String email, String password, String nickname) {
 		Account account = new Account();

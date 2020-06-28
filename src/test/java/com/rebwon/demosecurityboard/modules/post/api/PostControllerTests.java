@@ -62,10 +62,10 @@ class PostControllerTests extends ControllerTests {
 			.build();
 
 		mockMvc.perform(post("/api/posts")
-				.content(objectMapper.writeValueAsString(payload))
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaTypes.HAL_JSON)
-			)
+			.content(objectMapper.writeValueAsString(payload))
+			.contentType(MediaType.APPLICATION_JSON)
+			.accept(MediaTypes.HAL_JSON)
+		)
 			.andDo(print())
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("id").exists())
@@ -89,7 +89,8 @@ class PostControllerTests extends ControllerTests {
 				requestFields(
 					fieldWithPath("title").type(JsonFieldType.STRING).description("<<title,title of new post>>"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("<<content,content of new post>>"),
-					fieldWithPath("categoryName").type(JsonFieldType.STRING).description("<<categoryName,categoryName of new post>>"),
+					fieldWithPath("categoryName").type(JsonFieldType.STRING)
+						.description("<<categoryName,categoryName of new post>>"),
 					fieldWithPath("tagName").type(JsonFieldType.ARRAY).description("<<tagName,tagName of new post>>")
 				),
 				responseHeaders(
@@ -213,7 +214,7 @@ class PostControllerTests extends ControllerTests {
 			Activity.writePost(authAccount.getId(), post.getId(), new PostScoreCondition()));
 
 		mockMvc.perform(delete("/api/posts/" + post.getId()))
-				.andDo(print())
-				.andExpect(status().isNoContent());
+			.andDo(print())
+			.andExpect(status().isNoContent());
 	}
 }

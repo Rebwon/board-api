@@ -36,8 +36,8 @@ public class Post extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
 	private List<Tag> tags = new ArrayList<>();
-	private int countOfRecommend = 0;
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Integer likeCount = 0;
+	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
 	private List<Comment> comments = new ArrayList<>();
 
 	public static Post of(String title, String content, Account writer, String categoryName, List<Tag> tags) {
