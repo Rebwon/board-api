@@ -48,17 +48,18 @@ public class AccountServiceImpl implements AccountService {
 	@Transactional(readOnly = true)
 	@Override
 	public Account findAccount(Long id, Account authAccount) {
-		authAccount.isNowOwner(id);
-		Activities activities = new Activities(activityRepository.findByAccountId(id));
 		Account account = accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
+		account.isNowOwner(authAccount);
+		Activities activities = new Activities(activityRepository.findByAccountId(id));
 		account.calculateTotalScore(activities);
 		return account;
 	}
 
 	@Override
 	public Account update(Long id, Account authAccount, AccountUpdatePayload payload) {
-		authAccount.isNowOwner(id);
-		authAccount.update(payload.getNickname(), this.passwordEncoder.encode(payload.getNewPassword()));
-		return authAccount;
+		Account account = accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
+		account.isNowOwner(authAccount);
+		account.update(payload.getNickname(), this.passwordEncoder.encode(payload.getNewPassword()));
+		return account;
 	}
 }

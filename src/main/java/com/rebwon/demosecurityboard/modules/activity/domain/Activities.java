@@ -13,7 +13,7 @@ public class Activities {
 
 	public Integer calculateTotalScore(Account account) {
 		return this.activities.stream()
-			.filter(a -> a.getAccountId().equals(account.getId()))
+			.filter(a -> a.hasActivityUser(account))
 			.mapToInt(Activity::getScore)
 			.sum();
 	}

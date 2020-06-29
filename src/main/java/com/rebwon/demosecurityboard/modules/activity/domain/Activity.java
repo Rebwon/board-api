@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -41,5 +42,9 @@ public class Activity extends BaseEntity {
 
 	public static Activity writeComment(Long accountId, Long commentId, ScoreCondition condition) {
 		return new Activity(accountId, null, commentId, condition);
+	}
+
+	public boolean hasActivityUser(Account account) {
+		return this.accountId.equals(account.getId());
 	}
 }

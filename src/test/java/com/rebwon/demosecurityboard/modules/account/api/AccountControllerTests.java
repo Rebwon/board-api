@@ -33,9 +33,12 @@ public class AccountControllerTests extends ControllerTests {
 	@Autowired
 	private AccountRepository accountRepository;
 
+	private Account testAccount;
+
 	@BeforeEach
 	void setUp() {
-		accountRepository.save(Account.of("test@gmail.com", "testpass", "test"));
+		testAccount = Account.of("test@gmail.com", "testpass", "test");
+		accountRepository.save(testAccount);
 	}
 
 	@AfterEach
@@ -157,7 +160,7 @@ public class AccountControllerTests extends ControllerTests {
 			.newPasswordConfirm("123456789")
 			.build();
 
-		mockMvc.perform(put("/api/accounts/123")
+		mockMvc.perform(put("/api/accounts/" + testAccount.getId())
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(payload))
 		)
@@ -206,9 +209,18 @@ public class AccountControllerTests extends ControllerTests {
 	@WithAccount("rebwon")
 	@DisplayName("계정조회 - 자신의 정보가 아닌 정보 조회 - 실패")
 	void given_WithAuthMockUser_When_getAccount_Is_Not_Mine_Resource_Then_HTTP_CODE_401() throws Exception {
-		mockMvc.perform(get("/api/accounts/123"))
+		mockMvc.perform(get("/api/accounts/" + testAccount.getId()))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("계정조회 - 존재하지 않는 계정 - 실패")
+	void given_WithAuthMockUser_When_getAccount_Then_Fail_HTTP_CODE_404() throws Exception {
+		mockMvc.perform(get("/api/accounts/2111"))
+			.andDo(print())
+			.andExpect(status().isNotFound());
 	}
 
 	@Test

@@ -54,8 +54,8 @@ public class Account extends BaseEntity {
 		this.password = password;
 	}
 
-	public void isNowOwner(Long id) {
-		if(!this.id.equals(id))
+	public void isNowOwner(Account account) {
+		if(!this.equals(account))
 			throw new NotOwnerException();
 	}
 
