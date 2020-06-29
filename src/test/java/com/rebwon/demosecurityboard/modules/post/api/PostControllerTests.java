@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
+import com.rebwon.demosecurityboard.modules.post.domain.Tag;
 
 class PostControllerTests extends ControllerTests {
 
@@ -107,14 +109,10 @@ class PostControllerTests extends ControllerTests {
 					fieldWithPath("modifiedDate").description("modifiedDate of new post"),
 					fieldWithPath("category.id").description("category identifier of new post"),
 					fieldWithPath("category.name").description("category name of new post"),
-					fieldWithPath("comments.[]").description("post comments"),
-					fieldWithPath("tags.[0].id").description("tag identifier of new post"),
-					fieldWithPath("tags.[0].name").description("tag name of new post"),
-					fieldWithPath("tags.[1].id").description("tag identifier of new post"),
-					fieldWithPath("tags.[1].name").description("tag name of new post"),
-					fieldWithPath("tags.[2].id").description("tag identifier of new post"),
-					fieldWithPath("tags.[2].name").description("tag name of new post"),
-					fieldWithPath("countOfRecommend").description("countOfRecommend of new post"),
+					fieldWithPath("tags[0].name").description("tag name of new post"),
+					fieldWithPath("tags[1].name").description("tag name of new post"),
+					fieldWithPath("tags[2].name").description("tag name of new post"),
+					fieldWithPath("likeCount").description("likeCount of new post"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-post.href").description("link to update-post")
 				)
@@ -183,9 +181,8 @@ class PostControllerTests extends ControllerTests {
 					fieldWithPath("writer.nickname").description("post writer nickname"),
 					fieldWithPath("category.id").description("post category identifier"),
 					fieldWithPath("category.name").description("post category name"),
-					fieldWithPath("comments.[]").description("post comments"),
 					fieldWithPath("tags.[]").description("post tags"),
-					fieldWithPath("countOfRecommend").description("post Recommendation Count"),
+					fieldWithPath("likeCount").description("post likeCount"),
 					fieldWithPath("createdDate").description("createdDate of new post"),
 					fieldWithPath("modifiedDate").description("modifiedDate of new post"),
 					fieldWithPath("_links.self.href").description("link to self"),
@@ -209,7 +206,9 @@ class PostControllerTests extends ControllerTests {
 		UserAccount userAccount = getUserAccount();
 		Account authAccount = userAccount.getAccount();
 		Post post = postRepository.save(
-			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Collections.emptyList()));
+			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Arrays.asList(
+				new Tag("Spring"), new Tag("Hibernate")
+			)));
 		activityRepository.save(
 			Activity.writePost(authAccount.getId(), post.getId(), new PostScoreCondition()));
 

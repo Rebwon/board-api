@@ -33,12 +33,9 @@ public class Post extends BaseEntity {
 	private Account writer;
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Category category;
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "post_id")
+	@ElementCollection
 	private List<Tag> tags = new ArrayList<>();
 	private Integer likeCount = 0;
-	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-	private List<Comment> comments = new ArrayList<>();
 
 	public static Post of(String title, String content, Account writer, String categoryName, List<Tag> tags) {
 		Post post = new Post();
@@ -54,11 +51,7 @@ public class Post extends BaseEntity {
 		return writer.equals(account);
 	}
 
-	public void write(Comment comment) {
-		this.comments.add(comment);
-	}
-
-	public boolean hasEmptyComments() {
+	public boolean hasEmptyComments(List<Comment> comments) {
 		return comments.isEmpty();
 	}
 }

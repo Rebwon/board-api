@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rebwon.demosecurityboard.modules.account.api.exception.AccountNotFoundException;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
+import com.rebwon.demosecurityboard.modules.comment.domain.Comment;
+import com.rebwon.demosecurityboard.modules.comment.domain.CommentRepository;
 import com.rebwon.demosecurityboard.modules.post.api.exception.PostNotFoundException;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 	private final PostRepository postRepository;
+	private final CommentRepository commentRepository;
 	private final AccountRepository accountRepository;
 	private final ApplicationEventPublisher publisher;
 
@@ -53,9 +56,9 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public void delete(Long postId, Account account) {
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-		if(post.isSameWriter(account) && post.hasEmptyComments()) {
+		List<Comment> comments = commentRepository.findByPost_Id(post.getId());
+		if(post.isSameWriter(account) && post.hasEmptyComments(comments))
 			publisher.publishEvent(new PostDeletedEvent(post));
 			postRepository.delete(post);
-		}
 	}
 }

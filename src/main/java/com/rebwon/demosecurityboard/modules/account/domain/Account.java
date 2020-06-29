@@ -1,6 +1,5 @@
 package com.rebwon.demosecurityboard.modules.account.domain;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -16,7 +15,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.rebwon.demosecurityboard.modules.account.api.exception.NotOwnerException;
-import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
+import com.rebwon.demosecurityboard.modules.activity.domain.Activities;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -60,10 +59,7 @@ public class Account extends BaseEntity {
 			throw new NotOwnerException();
 	}
 
-	public void calculateTotalScore(List<Activity> activities) {
-		this.totalScore = activities.stream()
-			.filter(a -> a.getAccountId().equals(this.id))
-			.mapToInt(Activity::getScore)
-			.sum();
+	public void calculateTotalScore(Activities activities) {
+		this.totalScore = activities.calculateTotalScore(this);
 	}
 }

@@ -25,7 +25,7 @@ public class Activity extends BaseEntity {
 	private Long accountId;
 	private Long postId;
 	private Long commentId;
-	private int score;
+	private Integer score = 0;
 
 	private Activity(Long accountId, Long postId, Long commentId,
 		ScoreCondition condition) {
