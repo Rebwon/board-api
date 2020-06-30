@@ -41,11 +41,14 @@ class PostControllerTests extends ControllerTests {
 	@Autowired private AccountValidator accountValidator;
 	@Autowired private ActivityRepository activityRepository;
 	private Post setupPost;
+	private Post checkedPost;
 
 	@BeforeEach
 	void setUp() {
-		Post post = Fixtures.generatePost(getUserAccount().getAccount());
-		setupPost = postRepository.save(post);
+		Account account = Account.of("chulsu@naver.com", "123456781", "chulsu");
+		accountRepository.save(account);
+		setupPost = postRepository.save(Fixtures.generateSetupPost(getUserAccount().getAccount()));
+		checkedPost = postRepository.save(Fixtures.generateCheckedPost(account));
 	}
 
 	@AfterEach
@@ -178,6 +181,25 @@ class PostControllerTests extends ControllerTests {
 			.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE.concat(UTF8)))
 			.andExpect(jsonPath("_links.self").exists())
 			.andExpect(jsonPath("_links.update-post").exists());
+	}
+
+	@Test
+	@WithAccount("rebwon")
+	@DisplayName("게시글 수정 - 게시글의 작성자가 아닌 경우 - 실패")
+	void given_updatePayload_When_Update_Then_Failed_HTTP_CODE_401() throws Exception {
+		PostUpdatePayload payload = PostUpdatePayload.builder()
+			.title("Test Title")
+			.content("Test Contents")
+			.categoryName("SpringBoot")
+			.tagName(Arrays.asList("ORM", "Python", "ATDD"))
+			.build();
+
+		mockMvc.perform(put("/api/posts/" + checkedPost.getId())
+				.content(objectMapper.writeValueAsString(payload))
+				.contentType(MediaType.APPLICATION_JSON)
+		)
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
 	}
 
 	@Test

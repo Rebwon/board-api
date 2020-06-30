@@ -17,7 +17,7 @@ public enum ErrorCode {
 	IS_NOT_OWNER(401, "A003", "You are not the owner of the requested resource"),
 	PASSWORD_MISS_MATCHED(400, "A004", "Password miss matched"),
 
-	INVALID_WRITER(403, "P001", "Could not access this post write");
+	INVALID_WRITER(401, "P001", "Could not access this post write");
 
 	private String code;
 	private String message;
