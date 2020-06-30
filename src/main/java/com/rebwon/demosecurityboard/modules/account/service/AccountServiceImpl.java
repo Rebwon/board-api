@@ -12,8 +12,6 @@ import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
 import com.rebwon.demosecurityboard.modules.account.api.payload.AccountUpdatePayload;
 import com.rebwon.demosecurityboard.modules.account.api.payload.SignUpPayload;
-import com.rebwon.demosecurityboard.modules.activity.domain.Activities;
-import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 	private final AccountRepository accountRepository;
-	private final ActivityRepository activityRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional(readOnly = true)
@@ -50,8 +47,6 @@ public class AccountServiceImpl implements AccountService {
 	public Account findAccount(Long id, Account authAccount) {
 		Account account = accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
 		account.isNowOwner(authAccount);
-		Activities activities = new Activities(activityRepository.findByAccountId(id));
-		account.calculateTotalScore(activities);
 		return account;
 	}
 

@@ -1,12 +1,12 @@
 package com.rebwon.demosecurityboard.modules.post.domain.event;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
-import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
-import com.rebwon.demosecurityboard.modules.activity.domain.PostScoreCondition;
+import com.rebwon.demosecurityboard.modules.account.domain.AccountValidator;
+import com.rebwon.demosecurityboard.modules.activity.service.ActivityService;
 import lombok.RequiredArgsConstructor;
 
 @Async
@@ -14,17 +14,18 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class PostEventHandler {
-	private final ActivityRepository activityRepository;
+	private final ActivityService activityService;
+	private final AccountValidator accountValidator;
 
 	@EventListener
 	public void handlePostCreatedEvent(PostCreatedEvent createdEvent) {
-		Activity activity = Activity.writePost(createdEvent.getWriterId(), createdEvent.getPostId(),
-			new PostScoreCondition());
-		activityRepository.save(activity);
+		activityService.writePost(createdEvent);
+		accountValidator.validateTotalScore(createdEvent.getWriterId());
 	}
 
 	@EventListener
 	public void handlePostDeletedEvent(PostDeletedEvent deletedEvent) {
-		activityRepository.deleteActivityByAccountIdEqualsAndPostIdEquals(deletedEvent.getWriterId(), deletedEvent.getPostId());
+		activityService.deletePost(deletedEvent);
+		accountValidator.validateTotalScore(deletedEvent.getWriterId());
 	}
 }

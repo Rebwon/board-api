@@ -172,8 +172,7 @@ public class AccountControllerTests extends ControllerTests {
 	@WithAccount("rebwon")
 	@DisplayName("계정조회 - 성공")
 	void given_WithAuthMockUser_When_getAccount_Then_return_Account_HTTP_CODE_200() throws Exception {
-		UserAccount account = getUserAccount();
-		mockMvc.perform(get("/api/accounts/"+ account.getAccount().getId()))
+		mockMvc.perform(get("/api/accounts/"+ getUserAccount().getAccount().getId()))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("nickname").exists())
@@ -190,14 +189,15 @@ public class AccountControllerTests extends ControllerTests {
 				responseHeaders(
 					headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
 				),
-				relaxedResponseFields(
-					fieldWithPath("id").description("identifier of new account"),
-					fieldWithPath("email").description("email of new account"),
-					fieldWithPath("password").description("password of new account"),
-					fieldWithPath("nickname").description("nickname of new account"),
-					fieldWithPath("createdDate").description("createdDate of new account"),
-					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
-					fieldWithPath("roles").description("roles of new account"),
+				responseFields(
+					fieldWithPath("id").description("identifier of account"),
+					fieldWithPath("email").description("email of account"),
+					fieldWithPath("password").description("password of account"),
+					fieldWithPath("nickname").description("nickname of account"),
+					fieldWithPath("createdDate").description("createdDate of account"),
+					fieldWithPath("modifiedDate").description("modifiedDate of account"),
+					fieldWithPath("roles").description("roles of account"),
+					fieldWithPath("totalScore").description("total activity score of account"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")

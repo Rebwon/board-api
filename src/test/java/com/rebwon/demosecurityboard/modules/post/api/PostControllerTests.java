@@ -9,8 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,34 +20,37 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
-import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
+import com.rebwon.demosecurityboard.modules.account.domain.AccountValidator;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
 import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
 import com.rebwon.demosecurityboard.modules.activity.domain.PostScoreCondition;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
+import com.rebwon.demosecurityboard.modules.common.Fixtures;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
-import com.rebwon.demosecurityboard.modules.post.domain.Tag;
 
 class PostControllerTests extends ControllerTests {
 
-	@Autowired
-	private AccountRepository accountRepository;
+	@Autowired private AccountRepository accountRepository;
+	@Autowired private PostRepository postRepository;
+	@Autowired private AccountValidator accountValidator;
+	@Autowired private ActivityRepository activityRepository;
+	private Post setupPost;
 
-	@Autowired
-	private PostRepository postRepository;
-
-	@Autowired
-	private ActivityRepository activityRepository;
+	@BeforeEach
+	void setUp() {
+		Post post = Fixtures.generatePost(getUserAccount().getAccount());
+		setupPost = postRepository.save(post);
+	}
 
 	@AfterEach
 	void tearDown() {
 		postRepository.deleteAll();
 		accountRepository.deleteAll();
+		activityRepository.deleteAll();
 	}
 
 	@Test
@@ -111,7 +112,6 @@ class PostControllerTests extends ControllerTests {
 					fieldWithPath("category.name").description("category name of new post"),
 					fieldWithPath("tags[0].name").description("tag name of new post"),
 					fieldWithPath("tags[1].name").description("tag name of new post"),
-					fieldWithPath("tags[2].name").description("tag name of new post"),
 					fieldWithPath("likeCount").description("likeCount of new post"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-post.href").description("link to update-post")
@@ -153,14 +153,9 @@ class PostControllerTests extends ControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
-	@DisplayName("인증된 사용자가 게시글 1건 조회 - 성공")
+	@DisplayName("게시글 조회 - 성공")
 	void given_AuthAccount_Posts_when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
-		UserAccount userAccount = getUserAccount();
-		Account authAccount = userAccount.getAccount();
-		Post post = postRepository.save(
-			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Collections.emptyList()));
-
-		mockMvc.perform(get("/api/posts/" + post.getId()))
+		mockMvc.perform(get("/api/posts/" + setupPost.getId()))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("_links.self").exists())
@@ -183,6 +178,8 @@ class PostControllerTests extends ControllerTests {
 					fieldWithPath("category.name").description("post category name"),
 					fieldWithPath("tags.[]").description("post tags"),
 					fieldWithPath("likeCount").description("post likeCount"),
+					fieldWithPath("tags[0].name").description("tag name of new post"),
+					fieldWithPath("tags[1].name").description("tag name of new post"),
 					fieldWithPath("createdDate").description("createdDate of new post"),
 					fieldWithPath("modifiedDate").description("modifiedDate of new post"),
 					fieldWithPath("_links.self.href").description("link to self"),
@@ -192,7 +189,8 @@ class PostControllerTests extends ControllerTests {
 	}
 
 	@Test
-	@DisplayName("존재하지 않는 게시글 1건 조회 - 실패")
+	@WithAccount("rebwon")
+	@DisplayName("게시글 조회 - 존재하지 않는 게시글 1건 조회 - 실패")
 	void when_getPost_Then_Fail_HTTP_CODE_404() throws Exception {
 		mockMvc.perform(get("/api/posts/123"))
 			.andDo(print())
@@ -203,16 +201,10 @@ class PostControllerTests extends ControllerTests {
 	@WithAccount("rebwon")
 	@DisplayName("게시글 삭제 - 성공")
 	void given_PostId_When_Delete_Then_Success_HTTP_CODE_204() throws Exception {
-		UserAccount userAccount = getUserAccount();
-		Account authAccount = userAccount.getAccount();
-		Post post = postRepository.save(
-			Post.of("The Auth Account", "Auth contents", authAccount, "Auth", Arrays.asList(
-				new Tag("Spring"), new Tag("Hibernate")
-			)));
-		activityRepository.save(
-			Activity.writePost(authAccount.getId(), post.getId(), new PostScoreCondition()));
+		activityRepository.save(Activity.writePost(setupPost.getWriter().getId(), setupPost.getId(), new PostScoreCondition()));
+		accountValidator.validateTotalScore(setupPost.getWriter().getId());
 
-		mockMvc.perform(delete("/api/posts/" + post.getId()))
+		mockMvc.perform(delete("/api/posts/" + setupPost.getId()))
 			.andDo(print())
 			.andExpect(status().isNoContent());
 	}
