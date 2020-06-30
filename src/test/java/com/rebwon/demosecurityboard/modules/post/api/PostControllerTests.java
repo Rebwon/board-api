@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountValidator;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
@@ -29,6 +30,7 @@ import com.rebwon.demosecurityboard.modules.activity.domain.PostScoreCondition;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 import com.rebwon.demosecurityboard.modules.common.Fixtures;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
+import com.rebwon.demosecurityboard.modules.post.api.payload.PostUpdatePayload;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 
@@ -56,7 +58,7 @@ class PostControllerTests extends ControllerTests {
 	@Test
 	@WithAccount("rebwon")
 	@DisplayName("게시글 작성 - 성공")
-	void given_Payload_When_CreatePost_Then_Success_HTTP_CODE_201() throws Exception {
+	void given_createPayload_When_CreatePost_Then_Success_HTTP_CODE_201() throws Exception {
 		PostCreatePayload payload = PostCreatePayload.builder()
 			.title("Test Title")
 			.content("Test Contents")
@@ -122,7 +124,7 @@ class PostControllerTests extends ControllerTests {
 	@Test
 	@WithAccount("rebwon")
 	@DisplayName("게시글 작성 - Empty Payload 입력 - 실패")
-	void given_emptyPayload_When_CreatePost_Then_Fail_HTTP_CODE_400() throws Exception {
+	void given_emptyPayload_When_CreatePost_Then_Failed_HTTP_CODE_400() throws Exception {
 		PostCreatePayload payload = new PostCreatePayload();
 
 		mockMvc.perform(post("/api/posts")
@@ -153,8 +155,35 @@ class PostControllerTests extends ControllerTests {
 
 	@Test
 	@WithAccount("rebwon")
+	@DisplayName("게시글 수정 - 성공")
+	void given_updatePayload_When_Update_Then_Success_HTTP_CODE_204() throws Exception {
+		PostUpdatePayload payload = PostUpdatePayload.builder()
+			.title("Test Title")
+			.content("Test Contents")
+			.categoryName("SpringBoot")
+			.tagName(Arrays.asList("ORM", "Python", "ATDD"))
+			.build();
+
+		mockMvc.perform(put("/api/posts/" + setupPost.getId())
+			.content(objectMapper.writeValueAsString(payload))
+			.contentType(MediaType.APPLICATION_JSON)
+		)
+			.andDo(print())
+			.andExpect(status().isNoContent())
+			.andExpect(jsonPath("id").exists())
+			.andExpect(jsonPath("title").exists())
+			.andExpect(jsonPath("content").exists())
+			.andExpect(jsonPath("writer").exists())
+			.andExpect(jsonPath("category").exists())
+			.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE.concat(UTF8)))
+			.andExpect(jsonPath("_links.self").exists())
+			.andExpect(jsonPath("_links.update-post").exists());
+	}
+
+	@Test
+	@WithAccount("rebwon")
 	@DisplayName("게시글 조회 - 성공")
-	void given_AuthAccount_Posts_when_getPost_Then_Success_HTTP_CODE_200() throws Exception {
+	void given_AuthAccount_Post_When_findPost_Then_Success_HTTP_CODE_200() throws Exception {
 		mockMvc.perform(get("/api/posts/" + setupPost.getId()))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -191,7 +220,7 @@ class PostControllerTests extends ControllerTests {
 	@Test
 	@WithAccount("rebwon")
 	@DisplayName("게시글 조회 - 존재하지 않는 게시글 1건 조회 - 실패")
-	void when_getPost_Then_Fail_HTTP_CODE_404() throws Exception {
+	void when_findPost_Then_Failed_HTTP_CODE_404() throws Exception {
 		mockMvc.perform(get("/api/posts/123"))
 			.andDo(print())
 			.andExpect(status().isNotFound());

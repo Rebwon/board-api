@@ -47,6 +47,13 @@ public class Post extends BaseEntity {
 		return post;
 	}
 
+	public void update(String title, String content, String categoryName, List<Tag> tags) {
+		this.title = title;
+		this.content = content;
+		this.category = new Category(categoryName);
+		this.tags = tags;
+	}
+
 	public boolean isSameWriter(Account account) {
 		return writer.equals(account);
 	}

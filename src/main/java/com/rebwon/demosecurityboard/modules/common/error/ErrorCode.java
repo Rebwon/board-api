@@ -15,8 +15,9 @@ public enum ErrorCode {
 	EMAIL_DUPLICATION(400, "A001", "Duplicated Email"),
 	NICKNAME_DUPLICATION(400, "A002", "Duplicated Nickname"),
 	IS_NOT_OWNER(401, "A003", "You are not the owner of the requested resource"),
-	PASSWORD_MISS_MATCHED(400, "A004", "Password miss matched")
-	;
+	PASSWORD_MISS_MATCHED(400, "A004", "Password miss matched"),
+
+	INVALID_WRITER(403, "P001", "Could not access this post write");
 
 	private String code;
 	private String message;

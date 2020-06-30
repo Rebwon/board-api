@@ -13,7 +13,9 @@ import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.comment.domain.Comment;
 import com.rebwon.demosecurityboard.modules.comment.domain.CommentRepository;
+import com.rebwon.demosecurityboard.modules.post.api.exception.InvalidWriterException;
 import com.rebwon.demosecurityboard.modules.post.api.exception.PostNotFoundException;
+import com.rebwon.demosecurityboard.modules.post.api.payload.PostUpdatePayload;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import com.rebwon.demosecurityboard.modules.post.domain.PostRepository;
 import com.rebwon.demosecurityboard.modules.post.domain.Tag;
@@ -45,6 +47,17 @@ public class PostServiceImpl implements PostService {
 		if(tagName == null)
 			return Collections.emptyList();
 		return tagName.stream().map(Tag::new).collect(Collectors.toList());
+	}
+
+	@Override
+	public Post update(Long id, Account account, PostUpdatePayload payload) {
+		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+		List<Tag> tags = hasEmptyOrConvertTags(payload.getTagName());
+		if(!post.isSameWriter(account)) {
+			throw new InvalidWriterException(account.getNickname());
+		}
+		post.update(payload.getTitle(), payload.getContent(), payload.getCategoryName(), tags);
+		return post;
 	}
 
 	@Transactional(readOnly = true)
