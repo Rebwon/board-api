@@ -31,3 +31,4 @@ build/
 .vscode/
 
 TODO.md
+src/main/resources/application-oauth.yml
