@@ -29,12 +29,15 @@ import lombok.NoArgsConstructor;
 public class Account extends BaseEntity {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(unique = true, nullable = false)
-	private String email;
-	@Column(nullable = false)
-	private String password;
 	@Column(nullable = false)
 	private String nickname;
+	@Column(unique = true, nullable = false)
+	private String email;
+	private String password;
+	private String imageUrl;
+	private String providerId;
+	@Enumerated(EnumType.STRING)
+	private AuthProvider provider;
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private Set<AccountRole> roles;
@@ -46,6 +49,7 @@ public class Account extends BaseEntity {
 		account.password = password;
 		account.nickname = nickname;
 		account.roles = Set.of(AccountRole.USER);
+		account.provider = AuthProvider.LOCAL;
 		return account;
 	}
 

@@ -89,6 +89,9 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
 					fieldWithPath("roles").description("roles of new account"),
 					fieldWithPath("totalScore").description("total activity score of new account"),
+					fieldWithPath("imageUrl").description("social login image of account"),
+					fieldWithPath("providerId").description("authentication provider id of account"),
+					fieldWithPath("provider").description("authentication provider of account"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")
@@ -198,6 +201,9 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("modifiedDate").description("modifiedDate of account"),
 					fieldWithPath("roles").description("roles of account"),
 					fieldWithPath("totalScore").description("total activity score of account"),
+					fieldWithPath("imageUrl").description("social login image of account"),
+					fieldWithPath("providerId").description("authentication provider id of account"),
+					fieldWithPath("provider").description("authentication provider of account"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")
@@ -272,6 +278,9 @@ public class AccountControllerTests extends ControllerTests {
 					fieldWithPath("modifiedDate").description("modifiedDate of new account"),
 					fieldWithPath("roles").description("roles of new account"),
 					fieldWithPath("totalScore").description("total activity score of new account"),
+					fieldWithPath("imageUrl").description("social login image of account"),
+					fieldWithPath("providerId").description("authentication provider id of account"),
+					fieldWithPath("provider").description("authentication provider of account"),
 					fieldWithPath("_links.self.href").description("link to self"),
 					fieldWithPath("_links.update-account.href").description("link to update-account"),
 					fieldWithPath("_links.profile.href").description("link to profile")
