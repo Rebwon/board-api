@@ -73,6 +73,7 @@ class PostControllerTests extends ControllerTests {
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
 			.accept(MediaTypes.HAL_JSON)
+			.header(HttpHeaders.AUTHORIZATION, getAuthenticationToken())
 		)
 			.andDo(print())
 			.andExpect(status().isCreated())
@@ -170,6 +171,7 @@ class PostControllerTests extends ControllerTests {
 		mockMvc.perform(put("/api/posts/" + setupPost.getId())
 			.content(objectMapper.writeValueAsString(payload))
 			.contentType(MediaType.APPLICATION_JSON)
+			.header(HttpHeaders.AUTHORIZATION, getAuthenticationToken())
 		)
 			.andDo(print())
 			.andExpect(status().isNoContent())
@@ -206,7 +208,9 @@ class PostControllerTests extends ControllerTests {
 	@WithAccount("rebwon")
 	@DisplayName("게시글 조회 - 성공")
 	void given_AuthAccount_Post_When_findPost_Then_Success_HTTP_CODE_200() throws Exception {
-		mockMvc.perform(get("/api/posts/" + setupPost.getId()))
+		mockMvc.perform(get("/api/posts/" + setupPost.getId())
+			.header(HttpHeaders.AUTHORIZATION, getAuthenticationToken())
+		)
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("_links.self").exists())
@@ -255,7 +259,9 @@ class PostControllerTests extends ControllerTests {
 		activityRepository.save(Activity.writePost(setupPost.getWriter().getId(), setupPost.getId(), new PostScoreCondition()));
 		accountValidator.validateTotalScore(setupPost.getWriter().getId());
 
-		mockMvc.perform(delete("/api/posts/" + setupPost.getId()))
+		mockMvc.perform(delete("/api/posts/" + setupPost.getId())
+			.header(HttpHeaders.AUTHORIZATION, getAuthenticationToken())
+		)
 			.andDo(print())
 			.andExpect(status().isNoContent());
 	}

@@ -1,5 +1,6 @@
 package com.rebwon.demosecurityboard.modules.account.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
@@ -12,4 +13,6 @@ public interface AccountService extends UserDetailsService {
 	Account findAccount(Long id, Account account);
 
 	Account update(Long id, Account account, AccountUpdatePayload payload);
+
+	UserDetails loadUserById(Long id);
 }

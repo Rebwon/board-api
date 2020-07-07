@@ -18,7 +18,7 @@ public class UserAccount extends User {
 
 	private static Collection<? extends GrantedAuthority> authorities(Set<AccountRole> roles) {
 		return roles.stream()
-				.map(r -> new SimpleGrantedAuthority("ROLE" + r.name()))
+				.map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
 				.collect(Collectors.toSet());
 	}
 

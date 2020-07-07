@@ -35,6 +35,13 @@ public class AccountServiceImpl implements AccountService {
 		return new UserAccount(account);
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public UserDetails loadUserById(Long id) {
+		Account account = accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
+		return new UserAccount(account);
+	}
+
 	@Override
 	public Account register(SignUpPayload payload) {
 		Account account = Account.of(payload.getEmail(),

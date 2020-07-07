@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rebwon.demosecurityboard.modules.account.domain.UserAccount;
+import com.rebwon.demosecurityboard.modules.common.security.jwt.TokenProvider;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -33,11 +34,20 @@ public abstract class ControllerTests {
 	@Autowired
 	protected ObjectMapper objectMapper;
 
+	@Autowired
+	private TokenProvider tokenProvider;
+
 	protected static final String UTF8 = ";charset=UTF-8";
 
 	protected UserAccount getUserAccount() {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication authentication = context.getAuthentication();
 		return (UserAccount) authentication.getPrincipal();
+	}
+
+	protected String getAuthenticationToken() {
+		SecurityContext context = SecurityContextHolder.getContext();
+		Authentication authentication = context.getAuthentication();
+		return "Bearer " + tokenProvider.createToken(authentication);
 	}
 }

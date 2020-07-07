@@ -58,6 +58,7 @@ public class AccountControllerTests extends ControllerTests {
 		UserAccount userAccount = getUserAccount();
 
 		mockMvc.perform(put("/api/accounts/" + userAccount.getAccount().getId())
+				.header(HttpHeaders.AUTHORIZATION, getAuthenticationToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(payload))
 		)
@@ -175,7 +176,9 @@ public class AccountControllerTests extends ControllerTests {
 	@WithAccount("rebwon")
 	@DisplayName("계정조회 - 성공")
 	void given_WithAuthMockUser_When_getAccount_Then_return_Account_HTTP_CODE_200() throws Exception {
-		mockMvc.perform(get("/api/accounts/"+ getUserAccount().getAccount().getId()))
+		mockMvc.perform(get("/api/accounts/"+ getUserAccount().getAccount().getId())
+			.header(HttpHeaders.AUTHORIZATION, getAuthenticationToken())
+		)
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("nickname").exists())
