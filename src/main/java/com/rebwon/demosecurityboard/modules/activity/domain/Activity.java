@@ -44,7 +44,7 @@ public class Activity extends BaseEntity {
 		return new Activity(accountId, null, commentId, condition);
 	}
 
-	public boolean hasActivityUser(Account account) {
+	public boolean isActivityUser(Account account) {
 		return this.accountId.equals(account.getId());
 	}
 }

@@ -57,8 +57,4 @@ public class Post extends BaseEntity {
 	public boolean isSameWriter(Account account) {
 		return writer.equals(account);
 	}
-
-	public boolean hasEmptyComments(List<Comment> comments) {
-		return comments.isEmpty();
-	}
 }

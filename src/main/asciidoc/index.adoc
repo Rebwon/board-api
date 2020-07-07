@@ -134,21 +134,21 @@ operation::update-account[snippets='request-fields,curl-request,http-response,li
 operation::query-posts[snippets='response-fields,curl-request,http-response,links']
 
 [[resources-posts-create]]
-=== 이벤트 생성
+=== 게시글 생성
 
 `POST` 요청을 사용해서 새 게시글을 만들 수 있다.
 
 operation::create-post[snippets='request-fields,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
 
 [[resources-posts-get]]
-=== 이벤트 조회
+=== 게시글 조회
 
 `Get` 요청을 사용해서 기존 게시글 하나를 조회할 수 있다.
 
 operation::get-post[snippets='request-fields,curl-request,http-response,links']
 
 [[resources-posts-update]]
-=== 이벤트 수정
+=== 게시글 수정
 
 `PUT` 요청을 사용해서 기존 게시글을 수정할 수 있다.
 

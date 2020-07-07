@@ -2,6 +2,8 @@
 
 This application is satisfy restful condition and provides account registration, jwt authentication, write post, write comment something activities.
 
+---
+
 ### Run Task
 
 > $ mvn package
@@ -21,4 +23,4 @@ This application is satisfy restful condition and provides account registration,
 - QueryDSL
 - RestDocs
 - Maven
-- Other Dependencies Version management by io.jsonwebtoken - jjwt
+- Other Dependencies Version management by io.jsonwebtoken - jjwt   

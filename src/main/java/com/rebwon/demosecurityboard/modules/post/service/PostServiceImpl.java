@@ -36,14 +36,14 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Post create(PostCreatePayload payload, Account account) {
 		Account writer = accountRepository.findById(account.getId()).orElseThrow(AccountNotFoundException::new);
-		List<Tag> tags = hasEmptyOrConvertTags(payload.getTagName());
+		List<Tag> tags = hasEmptyOrConvert(payload.getTagName());
 		Post post = this.postRepository
 			.save(Post.of(payload.getTitle(), payload.getContent(), writer, payload.getCategoryName(), tags));
 		publisher.publishEvent(new PostCreatedEvent(post));
 		return post;
 	}
 
-	private List<Tag> hasEmptyOrConvertTags(List<String> tagName) {
+	private List<Tag> hasEmptyOrConvert(List<String> tagName) {
 		if(tagName == null)
 			return Collections.emptyList();
 		return tagName.stream().map(Tag::new).collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Post update(Long id, Account account, PostUpdatePayload payload) {
 		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-		List<Tag> tags = hasEmptyOrConvertTags(payload.getTagName());
+		List<Tag> tags = hasEmptyOrConvert(payload.getTagName());
 		if(!post.isSameWriter(account)) {
 			throw new InvalidWriterException(account.getNickname());
 		}
@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService {
 	public void delete(Long postId, Account account) {
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 		List<Comment> comments = commentRepository.findByPost_Id(post.getId());
-		if(post.isSameWriter(account) && post.hasEmptyComments(comments))
+		if(post.isSameWriter(account) && comments.isEmpty())
 			publisher.publishEvent(new PostDeletedEvent(post));
 			postRepository.delete(post);
 	}
