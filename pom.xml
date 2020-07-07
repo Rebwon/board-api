@@ -11,8 +11,8 @@
     <groupId>com.rebwon</groupId>
     <artifactId>demo-security-board</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo-security-board</name>
-    <description>Demo project for Spring Boot</description>
+    <name>board-api</name>
+    <description>Restful Board Application</description>
 
     <properties>
         <java.version>11</java.version>
@@ -49,6 +49,10 @@
         </dependency>
 
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
@@ -56,7 +60,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
