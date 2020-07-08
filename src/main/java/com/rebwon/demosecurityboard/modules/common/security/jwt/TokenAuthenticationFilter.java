@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
@@ -35,9 +36,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 			if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 				Long accountId = tokenProvider.getAccountIdFromJwt(jwt);
 
-				UserDetails userDetails = accountService.loadUserById(accountId);
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-					userDetails, null, userDetails.getAuthorities());
+				UserDetails principal = accountService.loadUserById(accountId);
+				Authentication authentication = new UsernamePasswordAuthenticationToken(
+					principal, principal.getPassword(), principal.getAuthorities());
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}

@@ -10,7 +10,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountSerializer;
-import com.rebwon.demosecurityboard.modules.comment.domain.Comment;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -37,14 +36,16 @@ public class Post extends BaseEntity {
 	private List<Tag> tags = new ArrayList<>();
 	private Integer likeCount = 0;
 
+	private Post(String title, String content, Account writer, String categoryName, List<Tag> tags) {
+		this.title = title;
+		this.content = content;
+		this.writer = writer;
+		this.category = new Category(categoryName);
+		this.tags = tags;
+	}
+
 	public static Post of(String title, String content, Account writer, String categoryName, List<Tag> tags) {
-		Post post = new Post();
-		post.title = title;
-		post.content = content;
-		post.writer = writer;
-		post.category = new Category(categoryName);
-		post.tags = tags;
-		return post;
+		return new Post(title, content, writer, categoryName, tags);
 	}
 
 	public void update(String title, String content, String categoryName, List<Tag> tags) {
