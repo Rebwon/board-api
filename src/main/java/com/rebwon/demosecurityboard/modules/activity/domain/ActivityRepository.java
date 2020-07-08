@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ActivityRepository extends JpaRepository<Activity, Long> {
-	void deleteActivityByAccountIdEqualsAndPostIdEquals(Long accountId, Long postId);
+public interface ActivityRepository extends JpaRepository<Activity, Long>, ActivityRepositoryCustom {
 	List<Activity> findByAccountId(Long accountId);
 }

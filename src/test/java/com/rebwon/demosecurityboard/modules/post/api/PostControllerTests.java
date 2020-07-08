@@ -26,7 +26,7 @@ import com.rebwon.demosecurityboard.modules.account.domain.AccountValidator;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
 import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
 import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
-import com.rebwon.demosecurityboard.modules.activity.domain.PostScoreCondition;
+import com.rebwon.demosecurityboard.modules.activity.domain.PostActivity;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
 import com.rebwon.demosecurityboard.modules.common.Fixtures;
 import com.rebwon.demosecurityboard.modules.post.api.payload.PostCreatePayload;
@@ -256,7 +256,7 @@ class PostControllerTests extends ControllerTests {
 	@WithAccount("rebwon")
 	@DisplayName("게시글 삭제 - 성공")
 	void given_PostId_When_Delete_Then_Success_HTTP_CODE_204() throws Exception {
-		activityRepository.save(Activity.writePost(setupPost.getWriter().getId(), setupPost.getId(), new PostScoreCondition()));
+		activityRepository.save(new PostActivity(setupPost.getWriter().getId(), setupPost.getId()));
 		accountValidator.validateTotalScore(setupPost.getWriter().getId());
 
 		mockMvc.perform(delete("/api/posts/" + setupPost.getId())
