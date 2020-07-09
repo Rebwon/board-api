@@ -52,10 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/api/**").permitAll()
-			.antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 			.antMatchers(HttpMethod.POST, "/api/accounts").permitAll()
-			.antMatchers(HttpMethod.GET, "/api/posts").permitAll()
-			.antMatchers(HttpMethod.GET, "/api/posts/detatils/**").permitAll()
 			.anyRequest().authenticated();
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

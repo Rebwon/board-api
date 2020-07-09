@@ -17,7 +17,6 @@ This application is satisfy restful condition and provides account registration,
 - Java 11
 - Spring Boot 2.3.0
 - Security
-- OAuth2-Client
 - Hateoas
 - JPA
 - QueryDSL

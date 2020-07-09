@@ -24,7 +24,6 @@ import com.rebwon.demosecurityboard.modules.account.domain.Account;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountRepository;
 import com.rebwon.demosecurityboard.modules.account.domain.AccountValidator;
 import com.rebwon.demosecurityboard.modules.account.mock.WithAccount;
-import com.rebwon.demosecurityboard.modules.activity.domain.Activity;
 import com.rebwon.demosecurityboard.modules.activity.domain.ActivityRepository;
 import com.rebwon.demosecurityboard.modules.activity.domain.PostActivity;
 import com.rebwon.demosecurityboard.modules.common.ControllerTests;
@@ -42,13 +41,13 @@ class PostControllerTests extends ControllerTests {
 	@Autowired private ActivityRepository activityRepository;
 	private Post setupPost;
 	private Post checkedPost;
+	private Account setupAccount;
 
 	@BeforeEach
 	void setUp() {
-		Account account = Account.of("chulsu@naver.com", "123456781", "chulsu");
-		accountRepository.save(account);
+		setupAccount = accountRepository.save(Account.of("chulsu@naver.com", "123456781", "chulsu"));
 		setupPost = postRepository.save(Fixtures.generateSetupPost(getUserAccount().getAccount()));
-		checkedPost = postRepository.save(Fixtures.generateCheckedPost(account));
+		checkedPost = postRepository.save(Fixtures.generateCheckedPost(setupAccount));
 	}
 
 	@AfterEach

@@ -7,7 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.rebwon.demosecurityboard.modules.account.domain.Account;
+import com.rebwon.demosecurityboard.modules.account.domain.AccountSerializer;
 import com.rebwon.demosecurityboard.modules.common.domain.BaseEntity;
 import com.rebwon.demosecurityboard.modules.post.domain.Post;
 import lombok.AccessLevel;
@@ -23,8 +26,10 @@ import lombok.NoArgsConstructor;
 public class Comment extends BaseEntity {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
+	@JsonSerialize(using = AccountSerializer.class)
 	private Account replyee;
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Post post;
 	private String content;
